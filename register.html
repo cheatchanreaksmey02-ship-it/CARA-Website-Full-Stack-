@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Cara Fashion</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="index.html"><img src="img/logo.jpg" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <a href="#" id="close"><i class="far fa-times"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+            <i id="bar" class="fas fa-bars"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2>Join Us</h2>
+        <p>Create your account</p>
+    </section>
+
+    <section id="form-details">
+        <form id="register-form">
+            <span>SIGN UP</span>
+            <h2>Create an Account</h2>
+            <p id="form-msg" style="color:#e63946; min-height:20px;"></p>
+            <input type="text" id="full-name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="E-mail" required>
+            <input type="password" id="password" placeholder="Password (min 6 characters)" required minlength="6">
+            <input type="password" id="confirm-password" placeholder="Confirm Password" required minlength="6">
+            <button type="submit" class="normal">Register</button>
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </form>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="img/logo.jpg" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong>No.562, Street 32, Boeung Keng Kang, Phnom Penh</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("register-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("form-msg");
+            const fullName = document.getElementById("full-name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirm = document.getElementById("confirm-password").value;
+
+            if (password !== confirm) {
+                msg.textContent = "Passwords do not match.";
+                return;
+            }
+            msg.style.color = "#088178";
+            msg.textContent = "Creating your account...";
+            const { error } = await registerUser(fullName, email, password);
+            if (error) {
+                msg.style.color = "#e63946";
+                msg.textContent = error.message;
+                return;
+            }
+            msg.textContent = "Account created! Check your email to confirm, then log in.";
+            document.getElementById("register-form").reset();
+        });
+    </script>
+</body>
+
+</html>

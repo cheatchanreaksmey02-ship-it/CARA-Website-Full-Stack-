@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Cara Fashion</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="../index.html"><img src="../img/logo.jpg" class="logo" alt=""></a>
+        <div><ul id="navbar"><li><a href="../index.html">← Back to Site</a></li></ul></div>
+    </section>
+
+    <div class="dash-wrap">
+        <nav class="dash-sidebar">
+            <a href="dashboard.html">Overview</a>
+            <a href="products.html">Products</a>
+            <a href="orders.html">Orders</a>
+            <a href="messages.html">Messages</a>
+            <a href="users.html" class="active">Users</a>
+        </nav>
+        <main class="dash-main">
+            <h2>Manage Users</h2>
+            <p style="color:#606063; margin-bottom:15px;">Promote trusted users to Admin, or revoke access.</p>
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Name</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="users-body">
+                    <tr><td colspan="4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        async function toggleRole(id, currentRole) {
+            const newRole = currentRole === "admin" ? "user" : "admin";
+            if (!confirm(`Change this user's role to "${newRole}"?`)) return;
+            const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", id);
+            if (error) { alert(error.message); return; }
+            loadUsers();
+        }
+
+        async function loadUsers() {
+            const body = document.getElementById("users-body");
+            const { data, error } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
+            if (error) { body.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`; return; }
+            body.innerHTML = data.map(u => `
+                <tr>
+                    <td>${u.full_name || "(no name)"}</td>
+                    <td><span class="badge-role ${u.role === "admin" ? "badge-admin" : "badge-user"}">${u.role}</span></td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td><a href="#" onclick="toggleRole('${u.id}', '${u.role}');return false;">
+                        ${u.role === "admin" ? "Revoke admin" : "Make admin"}
+                    </a></td>
+                </tr>`).join("");
+        }
+
+        (async () => {
+            const auth = await requireAuth(true, "../login.html?redirect=admin/users.html", "../index.html");
+            if (!auth) return;
+            loadUsers();
+        })();
+    </script>
+</body>
+
+</html>

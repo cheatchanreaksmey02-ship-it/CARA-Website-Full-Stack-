@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midterm Project</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="#"><img src="img/logo.jpg" class="logo" alt=""></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a  class="active" href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <a href="#" id="close"><i class="far fa-times"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+            <i id="bar" class="fas fa-bars"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2>Let's Talk</h2>
+        <p>LEAVE A MESSAGE. We love to hear from you!</p>
+    </section>
+
+    <section id="contact-details" class="section-p1">
+        <div class="details">
+            <span>GET IN TOUCH</span>
+            <h2>Visit one of our agency locations or contact is today</h2>
+            <h3>Head Office</h3>
+            <div>
+                <li>
+                <i class="fal fa-map"></i>
+                <p>No. 562, St 32, BKK, Phnom Penh</p>
+                </li>
+
+                <li>
+                <i class="fal fa-envelope"></i>
+                <p>carafashion168@gmail.com</p>
+                </li>
+
+                <li>
+                <i class="fal fa-phone-alt"></i>
+                <p>(+85) 12 345 678 </p>
+                </li>
+
+                <li>
+                <i class="fal fa-clock"></i>
+                <p>Monday to Saturday: 8:00am to 17:00pm</p>
+                </li>
+            </div>
+        </div>
+
+        <div class="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62528.635615834624!2d104.8828671!3d11.620518299999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31095164d2225201%3A0xfb519c28c65b0b3f!2sA.N.D!5e0!3m2!1sen!2skh!4v1782337743510!5m2!1sen!2skh" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+
+        </div>
+    </section>
+
+    <section id="form-details">
+        <form id="contact-form">
+            <span>LEAVE A MESSAGE</span>
+            <h2> We love to hear from you</h2>
+            <p id="contact-msg" style="min-height:20px;"></p>
+            <input type="text" id="contact-name" placeholder="Your Name" required>
+            <input type="email" id="contact-email" placeholder="E-mail" required>
+            <input type="text" id="contact-subject" placeholder="Subject">
+            <textarea id="contact-message" cols="30" rows="10" placeholder="Your Message" required></textarea>
+            <button type="submit" class="normal">Submit</button>
+        </form>
+    </section>
+
+     <section id="newsletter" class="section-p1 section-m1"> 
+        <div class="newstext">
+            <h4>Sign Up For Newsletters</h4>
+            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Your email address">
+            <button class="normal">Sign Up</button>
+        </div>
+
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="img/logo.jpg" alt="">
+            <h4>Contact</h4>
+            <p> <strong>Address:</strong>No.562, Street 32, Boeung Keng Kang, Phnom Penh</p>
+            <p><strong>Phone:</strong> +85 12 345 678</p>
+            <p><strong>Hours:</strong> 08:00 - 17:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Term & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4> Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="img/pay/app.jpg" alt="">
+                <img src="img/pay/play.jpg" alt="">   
+            </div>
+        </div>
+    </footer>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("contact-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("contact-msg");
+            const payload = {
+                name: document.getElementById("contact-name").value.trim(),
+                email: document.getElementById("contact-email").value.trim(),
+                subject: document.getElementById("contact-subject").value.trim(),
+                message: document.getElementById("contact-message").value.trim()
+            };
+            msg.style.color = "#088178";
+            msg.textContent = "Sending...";
+            const { error } = await supabase.from("messages").insert(payload);
+            if (error) {
+                msg.style.color = "#e63946";
+                msg.textContent = "Something went wrong. Please try again.";
+                return;
+            }
+            msg.textContent = "Thanks! Your message has been sent.";
+            document.getElementById("contact-form").reset();
+        });
+    </script>
+</body>
+
+</html>

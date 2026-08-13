@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - Cara Fashion</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="index.html"><img src="img/logo.jpg" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a class="active" href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <a href="#" id="close"><i class="far fa-times"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+            <i id="bar" class="fas fa-bars"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2 id="pd-name">Product</h2>
+        <p id="pd-brand"></p>
+    </section>
+
+    <section class="section-p1" style="display:flex; gap:40px; flex-wrap:wrap; justify-content:center;">
+        <img id="pd-image" src="" alt="" style="max-width:400px; width:100%; border-radius:20px; object-fit:cover;">
+        <div style="max-width:450px;">
+            <div id="pd-stars" class="star"></div>
+            <h4 style="color:#088178; font-size:24px; margin:15px 0;" id="pd-price"></h4>
+            <p id="pd-description" style="color:#606063; line-height:1.7;"></p>
+            <p id="pd-stock" style="margin:15px 0; font-weight:600;"></p>
+            <button class="btn-primary" id="pd-add">Add to Cart</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="img/logo.jpg" alt="">
+            <h4>Contact</h4>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (async () => {
+            const id = new URLSearchParams(window.location.search).get("id");
+            if (!id) { document.body.innerHTML = "<p style='padding:40px'>No product specified.</p>"; return; }
+
+            const { data: p, error } = await supabase.from("products").select("*").eq("id", id).single();
+            if (error || !p) { document.getElementById("pd-name").textContent = "Product not found"; return; }
+
+            document.title = p.name + " - Cara Fashion";
+            document.getElementById("pd-name").textContent = p.name;
+            document.getElementById("pd-brand").textContent = p.brand || "";
+            document.getElementById("pd-image").src = p.image_url || "img/product/f1.jpg";
+            document.getElementById("pd-image").alt = p.name;
+            document.getElementById("pd-stars").innerHTML = starsHtml(p.rating || 5);
+            document.getElementById("pd-price").textContent = `$${Number(p.price).toFixed(2)}`;
+            document.getElementById("pd-description").textContent = p.description || "No description provided.";
+            document.getElementById("pd-stock").textContent = p.stock > 0 ? `In stock: ${p.stock}` : "Out of stock";
+            document.getElementById("pd-add").addEventListener("click", () => addToCart(p));
+        })();
+    </script>
+</body>
+
+</html>

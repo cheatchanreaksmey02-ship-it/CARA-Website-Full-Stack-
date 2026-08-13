@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Cara Fashion</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="../index.html"><img src="../img/logo.jpg" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="../index.html">← Back to Site</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="dash-wrap">
+        <nav class="dash-sidebar">
+            <a href="dashboard.html" class="active">Overview</a>
+            <a href="products.html">Products</a>
+            <a href="orders.html">Orders</a>
+            <a href="messages.html">Messages</a>
+            <a href="users.html">Users</a>
+        </nav>
+        <main class="dash-main">
+            <h2>Dashboard Overview</h2>
+            <div class="stat-cards">
+                <div class="stat-card"><h3 id="stat-products">-</h3><p>Products</p></div>
+                <div class="stat-card"><h3 id="stat-orders">-</h3><p>Orders</p></div>
+                <div class="stat-card"><h3 id="stat-revenue">-</h3><p>Revenue</p></div>
+                <div class="stat-card"><h3 id="stat-users">-</h3><p>Registered Users</p></div>
+                <div class="stat-card"><h3 id="stat-messages">-</h3><p>New Messages</p></div>
+            </div>
+            <p id="dash-msg"></p>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        (async () => {
+            const auth = await requireAuth(true, "../login.html?redirect=admin/dashboard.html", "../index.html");
+            if (!auth) return;
+
+            const [{ count: productCount }, { count: orderCount }, { count: userCount }, { count: msgCount }, { data: orders }] =
+                await Promise.all([
+                    supabase.from("products").select("*", { count: "exact", head: true }),
+                    supabase.from("orders").select("*", { count: "exact", head: true }),
+                    supabase.from("profiles").select("*", { count: "exact", head: true }),
+                    supabase.from("messages").select("*", { count: "exact", head: true }),
+                    supabase.from("orders").select("total")
+                ]);
+
+            document.getElementById("stat-products").textContent = productCount ?? 0;
+            document.getElementById("stat-orders").textContent = orderCount ?? 0;
+            document.getElementById("stat-users").textContent = userCount ?? 0;
+            document.getElementById("stat-messages").textContent = msgCount ?? 0;
+            const revenue = (orders || []).reduce((s, o) => s + Number(o.total), 0);
+            document.getElementById("stat-revenue").textContent = `$${revenue.toFixed(2)}`;
+        })();
+    </script>
+</body>
+
+</html>
