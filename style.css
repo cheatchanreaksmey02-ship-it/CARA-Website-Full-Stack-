@@ -1186,3 +1186,18 @@ footer a:hover{
   .dash-wrap { flex-direction: column; }
   .dash-sidebar { width: 100%; display: flex; overflow-x: auto; padding: 10px 0; }
 }
+
+/* Restore original product card look now that titles/images are
+   wrapped in a link (needed for the product detail page) */
+#product1 .pro > a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+#product1 .pro > a .des {
+  text-align: start;
+  padding: 10px 0;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  align-items: end;
+}
