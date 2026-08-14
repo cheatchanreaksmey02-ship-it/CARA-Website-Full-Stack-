@@ -29,12 +29,16 @@ function productCardHtml(p) {
 }
 
 // Renders products into a container. limit=null means "all".
+// Renders products into a container. limit=null means "all".
 async function loadProducts(containerSelector, { limit = null, categoryName = null } = {}) {
   const container = document.querySelector(containerSelector);
   if (!container) return;
 
   let query = supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false });
-  if (limit) query = query.limit(limit);
+  // Only apply the DB limit when we are NOT filtering by category —
+  // otherwise the limit can cut off rows before the category filter runs,
+  // leaving nothing to show even though matching products exist.
+  if (limit && !categoryName) query = query.limit(limit);
   const { data: products, error } = await query;
 
   if (error) {
@@ -43,16 +47,29 @@ async function loadProducts(containerSelector, { limit = null, categoryName = nu
     return;
   }
 
-  const filtered = categoryName
+  let filtered = categoryName
     ? products.filter(p => p.categories && p.categories.name === categoryName)
     : products;
+
+  if (limit) filtered = filtered.slice(0, limit);
 
   if (!filtered || filtered.length === 0) {
     container.innerHTML = `<p>No products yet — check back soon!</p>`;
     return;
-  }
+  
 
   container.innerHTML = filtered.map(productCardHtml).join("");
+
+  // wire "add to cart" buttons
+  container.querySelectorAll(".cart-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = btn.closest(".pro").dataset.id;
+      const product = filtered.find(p => String(p.id) === id);
+      addToCart(product);
+    });
+  });
+}
 
   // wire "add to cart" buttons
   container.querySelectorAll(".cart-btn").forEach(btn => {
