@@ -1189,12 +1189,16 @@ footer a:hover{
 
 /* Restore original product card look now that titles/images are
    wrapped in a link (needed for the product detail page) */
-#product1 .pro > a {
+#featured-products .pro > a,
+#new-arrivals .pro > a,
+#shop-products .pro > a {
   text-decoration: none;
   color: inherit;
   display: block;
 }
-#product1 .pro > a .des {
+#featured-products .pro > a .des,
+#new-arrivals .pro > a .des,
+#shop-products .pro > a .des {
   text-align: start;
   padding: 10px 0;
   display: grid;
