@@ -5,7 +5,7 @@
 // ============================================================
 
 async function registerUser(fullName, email, password) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
     options: { data: { full_name: fullName } }
@@ -14,31 +14,31 @@ async function registerUser(fullName, email, password) {
 }
 
 async function loginUser(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   return { data, error };
 }
 
 async function logoutUser() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   window.location.href = "index.html";
 }
 
 async function sendPasswordReset(email) {
   const redirectTo = window.location.origin + window.location.pathname.replace("forgot-password.html", "reset-password.html");
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
   return { data, error };
 }
 
 async function updatePassword(newPassword) {
-  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
   return { data, error };
 }
 
 // Returns { user, profile } or { user: null, profile: null }
 async function getCurrentUser() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) return { user: null, profile: null };
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseClient
     .from("profiles")
     .select("*")
     .eq("id", session.user.id)

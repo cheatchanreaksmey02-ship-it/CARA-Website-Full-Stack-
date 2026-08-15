@@ -22,7 +22,7 @@
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a  class="active" href="contact.html">Contact</a></li>
-                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a></li>
                 <a href="#" id="close"><i class="far fa-times"></i></a>
             </ul>
         </div>
@@ -148,6 +148,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
     <script src="script.js"></script>
     <script>
         document.getElementById("contact-form").addEventListener("submit", async (e) => {
@@ -161,7 +162,7 @@
             };
             msg.style.color = "#088178";
             msg.textContent = "Sending...";
-            const { error } = await supabase.from("messages").insert(payload);
+            const { error } = await supabaseClient.from("messages").insert(payload);
             if (error) {
                 msg.style.color = "#e63946";
                 msg.textContent = "Something went wrong. Please try again.";

@@ -1,9 +1,12 @@
 // ============================================================
 // Cart — stored in localStorage so it works for guests too.
-// Checkout writes the order to Supabase (requires login).
+// Shows a slide-in confirmation drawer instead of a plain alert.
+// Checkout page writes the order to Supabase (requires login).
 // ============================================================
 
 const CART_KEY = "cara_cart";
+const FREE_SHIPPING_THRESHOLD = 50;
+const SHIPPING_FEE = 2;
 
 function getCart() {
   try {
@@ -18,17 +21,17 @@ function saveCart(cart) {
   updateCartBadge();
 }
 
-function addToCart(product) {
+function addToCart(product, qty = 1) {
   if (!product) return;
   const cart = getCart();
   const existing = cart.find(i => i.id === product.id);
   if (existing) {
-    existing.qty += 1;
+    existing.qty += qty;
   } else {
-    cart.push({ id: product.id, name: product.name, price: product.price, image_url: product.image_url, qty: 1 });
+    cart.push({ id: product.id, name: product.name, price: product.price, image_url: product.image_url, qty });
   }
   saveCart(cart);
-  alert(`${product.name} added to cart!`);
+  showAddedDrawer(product, qty);
 }
 
 function removeFromCart(id) {
@@ -48,75 +51,90 @@ function cartTotal(cart) {
   return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
 }
 
-function updateCartBadge() {
-  const count = getCart().reduce((sum, i) => sum + i.qty, 0);
-  const badge = document.getElementById("cart-count");
-  if (badge) badge.textContent = count;
+function shippingFor(subtotal) {
+  return subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
 }
 
-// Renders the cart table on cart.html
+function updateCartBadge() {
+  const count = getCart().reduce((sum, i) => sum + i.qty, 0);
+  document.querySelectorAll("#cart-count").forEach(b => b.textContent = count);
+}
+
+// ---------- Slide-in "added to cart" drawer (used on shop/product pages) ----------
+function showAddedDrawer(product, qty) {
+  let drawer = document.getElementById("added-drawer");
+  if (!drawer) {
+    drawer = document.createElement("div");
+    drawer.id = "added-drawer";
+    drawer.className = "added-drawer";
+    document.body.appendChild(drawer);
+  }
+  const count = getCart().reduce((sum, i) => sum + i.qty, 0);
+  drawer.innerHTML = `
+    <div class="added-drawer-inner">
+      <img src="${product.image_url || 'img/product/f1.jpg'}" alt="${product.name}">
+      <div class="added-drawer-text">
+        <strong>${product.name}</strong>
+        <span>${qty} added to your bag</span>
+      </div>
+      <a href="cart.html" class="btn-primary added-drawer-btn">View Bag (${count})</a>
+    </div>`;
+  drawer.classList.add("show");
+  clearTimeout(drawer._hideTimer);
+  drawer._hideTimer = setTimeout(() => drawer.classList.remove("show"), 4000);
+}
+
+// ---------- Cart page rendering ----------
 function renderCartPage() {
-  const body = document.getElementById("cart-body");
-  const totalEl = document.getElementById("cart-total");
+  const body = document.getElementById("cart-items");
   if (!body) return;
   const cart = getCart();
 
   if (cart.length === 0) {
-    body.innerHTML = `<tr><td colspan="4">Your cart is empty. <a href="shop.html">Go shopping</a></td></tr>`;
-    if (totalEl) totalEl.textContent = "$0.00";
+    body.innerHTML = `<p class="cart-empty">Your bag is empty. <a href="shop.html">Continue shopping</a></p>`;
+    renderCartSummary(cart);
     return;
   }
 
   body.innerHTML = cart.map(i => `
-    <tr>
-      <td><img src="${i.image_url || 'img/product/f1.jpg'}" alt="${i.name}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"> ${i.name}</td>
-      <td>$${i.price.toFixed(2)}</td>
-      <td><input type="number" min="1" value="${i.qty}" style="width:60px" onchange="updateQty(${i.id}, parseInt(this.value))"></td>
-      <td>$${(i.price * i.qty).toFixed(2)} <a href="#" onclick="removeFromCart(${i.id});return false;"><i class="fal fa-trash-alt"></i></a></td>
-    </tr>`).join("");
+    <div class="cart-row">
+      <img src="${i.image_url || 'img/product/f1.jpg'}" alt="${i.name}">
+      <div class="cart-row-info">
+        <h4>${i.name}</h4>
+        <p class="cart-row-price">$${i.price.toFixed(2)}</p>
+        <div class="qty-control">
+          <button onclick="updateQty(${i.id}, ${i.qty - 1})">-</button>
+          <span>${i.qty}</span>
+          <button onclick="updateQty(${i.id}, ${i.qty + 1})">+</button>
+          <a href="#" class="btn-danger cart-remove" onclick="removeFromCart(${i.id});return false;">Remove</a>
+        </div>
+      </div>
+      <div class="cart-row-subtotal">$${(i.price * i.qty).toFixed(2)}</div>
+    </div>`).join("");
 
-  if (totalEl) totalEl.textContent = `$${cartTotal(cart).toFixed(2)}`;
+  renderCartSummary(cart);
 }
 
-async function checkout() {
-  const { user } = await getCurrentUser();
-  const msg = document.getElementById("checkout-msg");
-  const cart = getCart();
+function renderCartSummary(cart) {
+  const summary = document.getElementById("cart-summary-box");
+  if (!summary) return;
+  const subtotal = cartTotal(cart);
+  const shipping = shippingFor(subtotal);
+  const total = subtotal + shipping;
 
-  if (!user) {
-    window.location.href = "login.html?redirect=cart.html";
-    return;
-  }
-  if (cart.length === 0) {
-    if (msg) msg.textContent = "Your cart is empty.";
-    return;
-  }
-
-  if (msg) { msg.style.color = "#088178"; msg.textContent = "Placing your order..."; }
-
-  const total = cartTotal(cart);
-  const { data: order, error: orderErr } = await supabase
-    .from("orders")
-    .insert({ user_id: user.id, total, status: "pending" })
-    .select()
-    .single();
-
-  if (orderErr) {
-    if (msg) { msg.style.color = "#e63946"; msg.textContent = orderErr.message; }
-    return;
-  }
-
-  const items = cart.map(i => ({ order_id: order.id, product_id: i.id, quantity: i.qty, price: i.price }));
-  const { error: itemsErr } = await supabase.from("order_items").insert(items);
-
-  if (itemsErr) {
-    if (msg) { msg.style.color = "#e63946"; msg.textContent = itemsErr.message; }
-    return;
-  }
-
-  saveCart([]);
-  renderCartPage();
-  if (msg) { msg.style.color = "#088178"; msg.textContent = "Order placed! Thank you for shopping with us."; }
+  summary.innerHTML = `
+    <h3>Order Summary</h3>
+    <div class="summary-line"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+    <div class="summary-line"><span>Shipping</span><span>${shipping === 0 ? "Free" : "$" + shipping.toFixed(2)}</span></div>
+    ${subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD
+      ? `<p class="summary-note">Add $${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for free shipping.</p>`
+      : ""}
+    <div class="summary-line summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+    <a href="${cart.length ? 'checkout.html' : '#'}" class="btn-primary summary-checkout-btn" ${cart.length ? "" : "aria-disabled='true' style='opacity:.5;pointer-events:none;'"}>
+      Proceed to Checkout
+    </a>
+    <a href="shop.html" class="summary-continue">Continue Shopping</a>
+  `;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

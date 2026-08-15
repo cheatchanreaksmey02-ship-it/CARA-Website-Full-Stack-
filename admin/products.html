@@ -41,6 +41,8 @@
                 <select id="p-category"></select>
                 <input type="number" id="p-stock" placeholder="Stock quantity" min="0" value="0">
                 <textarea id="p-description" placeholder="Description" rows="3"></textarea>
+                <input type="text" id="p-color" placeholder="Color name (optional, overrides auto color)">
+                <input type="text" id="p-color-hex" placeholder="Color hex e.g. #f0e6d2 (optional)">
                 <button type="submit" class="btn-primary">Save Product</button>
                 <button type="button" class="btn-primary" style="background:#606063;" id="cancel-edit">Cancel</button>
             </form>
@@ -64,7 +66,7 @@
         let categories = [];
 
         async function loadCategories() {
-            const { data } = await supabase.from("categories").select("*").order("id");
+            const { data } = await supabaseClient.from("categories").select("*").order("id");
             categories = data || [];
             document.getElementById("p-category").innerHTML =
                 categories.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
@@ -72,7 +74,7 @@
 
         async function loadAdminProducts() {
             const body = document.getElementById("products-body");
-            const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+            const { data, error } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
             if (error) { body.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`; return; }
             if (!data.length) { body.innerHTML = `<tr><td colspan="5">No products yet.</td></tr>`; return; }
             body.innerHTML = data.map(p => `
@@ -101,12 +103,14 @@
             document.getElementById("p-category").value = p.category_id || "";
             document.getElementById("p-stock").value = p.stock;
             document.getElementById("p-description").value = p.description || "";
+            document.getElementById("p-color").value = p.color || "";
+            document.getElementById("p-color-hex").value = p.color_hex || "";
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
         async function deleteProduct(id) {
             if (!confirm("Delete this product? This cannot be undone.")) return;
-            const { error } = await supabase.from("products").delete().eq("id", id);
+            const { error } = await supabaseClient.from("products").delete().eq("id", id);
             if (error) { alert(error.message); return; }
             loadAdminProducts();
         }
@@ -128,14 +132,16 @@
                 image_url: document.getElementById("p-image").value.trim(),
                 category_id: document.getElementById("p-category").value || null,
                 stock: parseInt(document.getElementById("p-stock").value) || 0,
-                description: document.getElementById("p-description").value.trim()
+                description: document.getElementById("p-description").value.trim(),
+                color: document.getElementById("p-color").value.trim() || null,
+                color_hex: document.getElementById("p-color-hex").value.trim() || null
             };
 
             msg.style.color = "#088178";
             msg.textContent = "Saving...";
             const { error } = id
-                ? await supabase.from("products").update(payload).eq("id", id)
-                : await supabase.from("products").insert(payload);
+                ? await supabaseClient.from("products").update(payload).eq("id", id)
+                : await supabaseClient.from("products").insert(payload);
 
             if (error) { msg.style.color = "#e63946"; msg.textContent = error.message; return; }
             msg.textContent = "Saved!";

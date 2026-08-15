@@ -7,63 +7,502 @@
     <title>Admin Dashboard - Cara Fashion</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
     <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ============================================================
+           ADMIN DASHBOARD (scoped under .adash- to avoid clashing with
+           the rest of the site's styles)
+           ============================================================ */
+        * { box-sizing: border-box; }
+        body { background: #f6f7f9; }
+
+        .adash-wrap { display: flex; min-height: 100vh; font-family: inherit; }
+
+        .adash-sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #ececec;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+        .adash-brand {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            padding: 0 8px;
+            color: #1a1a1a;
+        }
+        .adash-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 10px;
+            color: #606063;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 4px;
+            transition: 0.15s ease;
+        }
+        .adash-nav a i { width: 18px; text-align: center; color: #a0a0a3; }
+        .adash-nav a:hover { background: #f3f4f6; color: #1a1a1a; }
+        .adash-nav a.active { background: #e6f2ef; color: #088178; font-weight: 600; }
+        .adash-nav a.active i { color: #088178; }
+        .adash-nav-logout {
+            margin-top: 30px;
+            padding-top: 16px;
+            border-top: 1px solid #ececec;
+        }
+
+        .adash-main { flex: 1; padding: 28px 32px; min-width: 0; }
+
+        .adash-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 26px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .adash-topbar h1 { font-size: 24px; margin: 0 0 4px; color: #1a1a1a; }
+        .adash-topbar p { color: #8a8a8e; margin: 0; font-size: 14px; }
+        .adash-top-right { display: flex; align-items: center; gap: 18px; }
+        .adash-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #ececec;
+            border-radius: 10px;
+            padding: 9px 14px;
+            color: #9a9a9e;
+            font-size: 13px;
+            min-width: 200px;
+        }
+        .adash-avatar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .adash-avatar-circle {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: #e6f2ef; color: #088178;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+        }
+        .adash-avatar-text strong { display: block; font-size: 13px; color: #1a1a1a; }
+        .adash-avatar-text span { font-size: 12px; color: #9a9a9e; }
+
+        .adash-kpis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+        .adash-kpi-card {
+            background: #fff;
+            border: 1px solid #ececec;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .adash-kpi-icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; flex-shrink: 0;
+        }
+        .adash-kpi-card p.label { margin: 0; color: #8a8a8e; font-size: 13px; }
+        .adash-kpi-card h3 { margin: 4px 0 6px; font-size: 22px; color: #1a1a1a; }
+        .adash-kpi-delta { font-size: 12px; font-weight: 600; }
+        .adash-kpi-delta.up { color: #16a34a; }
+        .adash-kpi-delta.down { color: #e63946; }
+
+        .adash-content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .adash-panel {
+            background: #fff;
+            border: 1px solid #ececec;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .adash-panel-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .adash-panel-head h3 { margin: 0; font-size: 15px; color: #1a1a1a; }
+        .adash-panel-head a { font-size: 13px; color: #088178; text-decoration: none; font-weight: 600; }
+
+        .adash-qa-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 13px 14px;
+            border: 1px solid #ececec;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.15s ease;
+        }
+        .adash-qa-item:hover { border-color: #088178; background: #f7fbfa; }
+        .adash-qa-item span { display: flex; align-items: center; gap: 10px; }
+        .adash-qa-item i.leading { color: #088178; }
+
+        .adash-activity-item {
+            display: flex; gap: 12px; align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .adash-activity-item:last-child { border-bottom: none; }
+        .adash-activity-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; flex-shrink: 0;
+        }
+        .adash-activity-text p { margin: 0; font-size: 13px; color: #1a1a1a; }
+        .adash-activity-text span { font-size: 11px; color: #9a9a9e; }
+
+        table.adash-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.adash-table th {
+            text-align: left; padding: 10px 8px; color: #9a9a9e;
+            font-weight: 600; border-bottom: 1px solid #ececec; font-size: 12px;
+        }
+        table.adash-table td { padding: 12px 8px; border-bottom: 1px solid #f4f4f4; color: #1a1a1a; }
+        .adash-status {
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            display: inline-block;
+        }
+        .adash-view-btn {
+            width: 30px; height: 30px; border-radius: 8px; border: 1px solid #ececec;
+            background: #fff; color: #606063; cursor: pointer;
+        }
+
+        @media (max-width: 1000px) {
+            .adash-kpis { grid-template-columns: repeat(2, 1fr); }
+            .adash-content-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .adash-sidebar { display: none; }
+            .adash-kpis { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <section id="header">
-        <a href="../index.html"><img src="../img/logo.jpg" class="logo" alt=""></a>
-        <div>
-            <ul id="navbar">
-                <li><a href="../index.html">← Back to Site</a></li>
-            </ul>
-        </div>
-    </section>
-
-    <div class="dash-wrap">
-        <nav class="dash-sidebar">
-            <a href="dashboard.html" class="active">Overview</a>
-            <a href="products.html">Products</a>
-            <a href="orders.html">Orders</a>
-            <a href="messages.html">Messages</a>
-            <a href="users.html">Users</a>
-        </nav>
-        <main class="dash-main">
-            <h2>Dashboard Overview</h2>
-            <div class="stat-cards">
-                <div class="stat-card"><h3 id="stat-products">-</h3><p>Products</p></div>
-                <div class="stat-card"><h3 id="stat-orders">-</h3><p>Orders</p></div>
-                <div class="stat-card"><h3 id="stat-revenue">-</h3><p>Revenue</p></div>
-                <div class="stat-card"><h3 id="stat-users">-</h3><p>Registered Users</p></div>
-                <div class="stat-card"><h3 id="stat-messages">-</h3><p>New Messages</p></div>
+    <div class="adash-wrap">
+        <nav class="adash-sidebar">
+            <div class="adash-brand">CARA</div>
+            <div class="adash-nav">
+                <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="products.html"><i class="fas fa-box"></i> Products</a>
+                <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                <a href="users.html"><i class="fas fa-users"></i> Users</a>
+                <a href="messages.html"><i class="fas fa-envelope"></i> Messages</a>
             </div>
-            <p id="dash-msg"></p>
+            <div class="adash-nav-logout">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                <a href="#" id="adash-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </nav>
+
+        <main class="adash-main">
+            <div class="adash-topbar">
+                <div>
+                    <h1 id="adash-welcome">Welcome back 👋</h1>
+                    <p>Here's what's happening with your store today.</p>
+                </div>
+                <div class="adash-top-right">
+                    <div class="adash-search"><i class="fas fa-search"></i> Search...</div>
+                    <div class="adash-avatar">
+                        <div class="adash-avatar-circle" id="adash-avatar-letter">A</div>
+                        <div class="adash-avatar-text">
+                            <strong id="adash-admin-name">Admin</strong>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adash-kpis">
+                <div class="adash-kpi-card">
+                    <div class="adash-kpi-icon" style="background:#e6f2ef; color:#088178;"><i class="fas fa-dollar-sign"></i></div>
+                    <div>
+                        <p class="label">Total Sales</p>
+                        <h3 id="kpi-sales">-</h3>
+                        <span class="adash-kpi-delta" id="kpi-sales-delta"></span>
+                    </div>
+                </div>
+                <div class="adash-kpi-card">
+                    <div class="adash-kpi-icon" style="background:#eaf1fb; color:#2563eb;"><i class="fas fa-shopping-bag"></i></div>
+                    <div>
+                        <p class="label">Total Orders</p>
+                        <h3 id="kpi-orders">-</h3>
+                        <span class="adash-kpi-delta" id="kpi-orders-delta"></span>
+                    </div>
+                </div>
+                <div class="adash-kpi-card">
+                    <div class="adash-kpi-icon" style="background:#f2ecfb; color:#7c3aed;"><i class="fas fa-users"></i></div>
+                    <div>
+                        <p class="label">Total Customers</p>
+                        <h3 id="kpi-customers">-</h3>
+                        <span class="adash-kpi-delta" id="kpi-customers-delta"></span>
+                    </div>
+                </div>
+                <div class="adash-kpi-card">
+                    <div class="adash-kpi-icon" style="background:#fdf0e2; color:#d97706;"><i class="fas fa-box"></i></div>
+                    <div>
+                        <p class="label">Total Products</p>
+                        <h3 id="kpi-products">-</h3>
+                        <span class="adash-kpi-delta" id="kpi-products-delta"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adash-content-grid">
+                <div>
+                    <div class="adash-panel">
+                        <div class="adash-panel-head">
+                            <h3>Sales Overview (this month)</h3>
+                        </div>
+                        <canvas id="salesChart" height="110"></canvas>
+                    </div>
+
+                    <div class="adash-panel">
+                        <div class="adash-panel-head">
+                            <h3>Recent Orders</h3>
+                            <a href="orders.html">View All</a>
+                        </div>
+                        <table class="adash-table">
+                            <thead>
+                                <tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>
+                            </thead>
+                            <tbody id="recent-orders-body">
+                                <tr><td colspan="6">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="adash-panel">
+                        <div class="adash-panel-head"><h3>Quick Actions</h3></div>
+                        <a href="products.html" class="adash-qa-item">
+                            <span><i class="fas fa-plus leading"></i> Add New Product</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="orders.html" class="adash-qa-item">
+                            <span><i class="fas fa-shopping-bag leading"></i> View Orders</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="users.html" class="adash-qa-item">
+                            <span><i class="fas fa-users leading"></i> Manage Customers</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="messages.html" class="adash-qa-item">
+                            <span><i class="fas fa-envelope leading"></i> View Messages</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="adash-panel">
+                        <div class="adash-panel-head"><h3>Recent Activity</h3></div>
+                        <div id="activity-list">Loading...</div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script>
+        function statusColor(status) {
+            const s = (status || "").toLowerCase();
+            if (s === "delivered") return { bg: "#e6f7ec", color: "#16a34a" };
+            if (s === "shipped") return { bg: "#eaf1fb", color: "#2563eb" };
+            if (s === "processing") return { bg: "#fdf0e2", color: "#d97706" };
+            if (s === "cancelled") return { bg: "#fde8e8", color: "#e63946" };
+            return { bg: "#f0f0f0", color: "#606063" };
+        }
+
+        function calcDelta(current, previous) {
+            if (!previous) return { pct: current > 0 ? 100 : 0, up: current >= 0 };
+            const pct = ((current - previous) / previous) * 100;
+            return { pct: Math.abs(pct), up: pct >= 0 };
+        }
+
+        function renderDelta(elId, delta) {
+            const el = document.getElementById(elId);
+            el.className = "adash-kpi-delta " + (delta.up ? "up" : "down");
+            el.innerHTML = `<i class="fas fa-arrow-${delta.up ? "up" : "down"}"></i> ${delta.pct.toFixed(1)}% vs last month`;
+        }
+
         (async () => {
             const auth = await requireAuth(true, "../login.html?redirect=admin/dashboard.html", "../index.html");
             if (!auth) return;
 
-            const [{ count: productCount }, { count: orderCount }, { count: userCount }, { count: msgCount }, { data: orders }] =
-                await Promise.all([
-                    supabase.from("products").select("*", { count: "exact", head: true }),
-                    supabase.from("orders").select("*", { count: "exact", head: true }),
-                    supabase.from("profiles").select("*", { count: "exact", head: true }),
-                    supabase.from("messages").select("*", { count: "exact", head: true }),
-                    supabase.from("orders").select("total")
-                ]);
+            const adminName = auth.profile?.full_name || auth.user.email;
+            document.getElementById("adash-welcome").textContent = `Welcome back, ${adminName.split(" ")[0]} 👋`;
+            document.getElementById("adash-admin-name").textContent = adminName;
+            document.getElementById("adash-avatar-letter").textContent = adminName.charAt(0).toUpperCase();
 
-            document.getElementById("stat-products").textContent = productCount ?? 0;
-            document.getElementById("stat-orders").textContent = orderCount ?? 0;
-            document.getElementById("stat-users").textContent = userCount ?? 0;
-            document.getElementById("stat-messages").textContent = msgCount ?? 0;
-            const revenue = (orders || []).reduce((s, o) => s + Number(o.total), 0);
-            document.getElementById("stat-revenue").textContent = `$${revenue.toFixed(2)}`;
+            document.getElementById("adash-logout").addEventListener("click", (e) => {
+                e.preventDefault();
+                logoutUser();
+            });
+
+            const now = new Date();
+            const startThisMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+            const startLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+            const startNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
+
+            const [
+                { count: productCount },
+                { count: productCountThis },
+                { count: productCountLast },
+                { data: ordersThis },
+                { data: ordersLast },
+                { count: customerCount },
+                { count: customerCountThis },
+                { count: customerCountLast },
+                { data: recentOrders },
+                { data: recentProducts },
+                { data: recentProfiles }
+            ] = await Promise.all([
+                supabaseClient.from("products").select("*", { count: "exact", head: true }),
+                supabaseClient.from("products").select("*", { count: "exact", head: true }).gte("created_at", startThisMonth),
+                supabaseClient.from("products").select("*", { count: "exact", head: true }).gte("created_at", startLastMonth).lt("created_at", startThisMonth),
+                supabaseClient.from("orders").select("total, created_at").gte("created_at", startThisMonth).lt("created_at", startNextMonth),
+                supabaseClient.from("orders").select("total, created_at").gte("created_at", startLastMonth).lt("created_at", startThisMonth),
+                supabaseClient.from("profiles").select("*", { count: "exact", head: true }),
+                supabaseClient.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", startThisMonth),
+                supabaseClient.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", startLastMonth).lt("created_at", startThisMonth),
+                supabaseClient.from("orders").select("*, profiles(full_name)").order("created_at", { ascending: false }).limit(5),
+                supabaseClient.from("products").select("name, created_at").order("created_at", { ascending: false }).limit(1),
+                supabaseClient.from("profiles").select("full_name, created_at").order("created_at", { ascending: false }).limit(1)
+            ]);
+
+            // ---- KPIs ----
+            const salesThis = (ordersThis || []).reduce((s, o) => s + Number(o.total), 0);
+            const salesLast = (ordersLast || []).reduce((s, o) => s + Number(o.total), 0);
+            document.getElementById("kpi-sales").textContent = `$${salesThis.toFixed(2)}`;
+            renderDelta("kpi-sales-delta", calcDelta(salesThis, salesLast));
+
+            document.getElementById("kpi-orders").textContent = (ordersThis || []).length;
+            renderDelta("kpi-orders-delta", calcDelta((ordersThis || []).length, (ordersLast || []).length));
+
+            document.getElementById("kpi-customers").textContent = customerCount ?? 0;
+            renderDelta("kpi-customers-delta", calcDelta(customerCountThis || 0, customerCountLast || 0));
+
+            document.getElementById("kpi-products").textContent = productCount ?? 0;
+            renderDelta("kpi-products-delta", calcDelta(productCountThis || 0, productCountLast || 0));
+
+            // ---- Sales chart (daily totals this month) ----
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const dailySales = Array(daysInMonth).fill(0);
+            const dailyOrders = Array(daysInMonth).fill(0);
+            (ordersThis || []).forEach(o => {
+                const day = new Date(o.created_at).getDate() - 1;
+                dailySales[day] += Number(o.total);
+                dailyOrders[day] += 1;
+            });
+            new Chart(document.getElementById("salesChart"), {
+                type: "line",
+                data: {
+                    labels: Array.from({ length: daysInMonth }, (_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: "Sales",
+                            data: dailySales,
+                            borderColor: "#088178",
+                            backgroundColor: "rgba(8,129,120,0.08)",
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 2
+                        },
+                        {
+                            label: "Orders",
+                            data: dailyOrders,
+                            borderColor: "#c7d2d1",
+                            backgroundColor: "transparent",
+                            tension: 0.35,
+                            pointRadius: 2,
+                            yAxisID: "y1"
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: "index", intersect: false },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: "Sales ($)" } },
+                        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "Orders" } }
+                    }
+                }
+            });
+
+            // ---- Recent orders table ----
+            const ordersBody = document.getElementById("recent-orders-body");
+            if (!recentOrders || !recentOrders.length) {
+                ordersBody.innerHTML = `<tr><td colspan="6">No orders yet.</td></tr>`;
+            } else {
+                ordersBody.innerHTML = recentOrders.map(o => {
+                    const c = statusColor(o.status);
+                    return `
+                    <tr>
+                        <td>#ORD-${o.id}</td>
+                        <td>${o.profiles?.full_name || "Guest"}</td>
+                        <td>${new Date(o.created_at).toLocaleDateString()}</td>
+                        <td>$${Number(o.total).toFixed(2)}</td>
+                        <td><span class="adash-status" style="background:${c.bg}; color:${c.color};">${o.status || "pending"}</span></td>
+                        <td><a href="orders.html"><button class="adash-view-btn" type="button"><i class="fas fa-eye"></i></button></a></td>
+                    </tr>`;
+                }).join("");
+            }
+
+            // ---- Recent activity (merged real events) ----
+            const activity = [];
+            (recentOrders || []).slice(0, 2).forEach(o => activity.push({
+                icon: "fa-shopping-bag", bg: "#e6f2ef", color: "#088178",
+                text: `New order #ORD-${o.id} received`,
+                time: o.created_at
+            }));
+            (recentProducts || []).forEach(p => activity.push({
+                icon: "fa-box", bg: "#fdf0e2", color: "#d97706",
+                text: `Product "${p.name}" added`,
+                time: p.created_at
+            }));
+            (recentProfiles || []).forEach(u => activity.push({
+                icon: "fa-user", bg: "#f2ecfb", color: "#7c3aed",
+                text: `New customer ${u.full_name || "registered"}`,
+                time: u.created_at
+            }));
+            activity.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            const activityList = document.getElementById("activity-list");
+            if (!activity.length) {
+                activityList.innerHTML = `<p style="color:#9a9a9e; font-size:13px;">No recent activity.</p>`;
+            } else {
+                activityList.innerHTML = activity.slice(0, 5).map(a => `
+                    <div class="adash-activity-item">
+                        <div class="adash-activity-icon" style="background:${a.bg}; color:${a.color};"><i class="fas ${a.icon}"></i></div>
+                        <div class="adash-activity-text">
+                            <p>${a.text}</p>
+                            <span>${new Date(a.time).toLocaleString()}</span>
+                        </div>
+                    </div>`).join("");
+            }
         })();
     </script>
 </body>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Cara Fashion</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="index.html"><img src="img/logo.jpg" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a></li>
+                <a href="#" id="close"><i class="far fa-times"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+            <i id="bar" class="fas fa-bars"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2>Checkout</h2>
+        <p>Almost there — just a few details</p>
+    </section>
+
+    <section class="section-p1 checkout-page">
+        <div class="checkout-layout">
+            <form id="checkout-form" class="checkout-form">
+                <h3>Contact Information</h3>
+                <label>Full Name *</label>
+                <input type="text" id="ck-name" placeholder="Enter your full name" required>
+
+                <label>Phone *</label>
+                <input type="tel" id="ck-phone" placeholder="012 345 678" required>
+
+                <label>Email</label>
+                <input type="email" id="ck-email" placeholder="your@email.com (optional)">
+
+                <h3>Delivery Address</h3>
+                <label>Province / City *</label>
+                <select id="ck-province" required>
+                    <option value="">Select province/city</option>
+                    <option>Phnom Penh</option>
+                    <option>Takmao</option>
+                    <option>Siem Reap</option>
+                    <option>Battambang</option>
+                    <option>Sihanoukville</option>
+                    <option>Other</option>
+                </select>
+
+                <label>Address *</label>
+                <textarea id="ck-address" rows="3" placeholder="Street address, area, landmark" required></textarea>
+
+                <label>Note</label>
+                <textarea id="ck-note" rows="2" placeholder="Optional note (e.g., call before delivery)"></textarea>
+
+                <h3>Payment Method</h3>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="cod" checked>
+                        <span>Cash on Delivery</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="bank">
+                        <span>Bank Transfer / QR</span>
+                    </label>
+                </div>
+
+                <p id="checkout-msg" style="min-height:20px;"></p>
+                <button type="submit" class="btn-primary" style="width:100%;">Place Order</button>
+            </form>
+
+            <div id="order-result" style="display:none; text-align:center; padding:20px;"></div>
+
+
+            <aside id="checkout-summary" class="cart-summary-box">Loading...</aside>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+    <div class="col">
+        <img class="logo" src="img/logo.jpg" alt="">
+        <h4>Contact</h4>
+        <p> <strong>Address:</strong>No.562, Street 32, Boeung Keng Kang, Phnom Penh</p>
+        <p><strong>Phone:</strong> +85 12 345 678</p>
+        <p><strong>Hours:</strong> 08:00 - 17:00, Mon - Sat</p>
+        <div class="follow">
+            <h4>Follow Us</h4>
+            <div class="icon">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-pinterest-p"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About us</a>
+        <a href="#">Delivery Information</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Term & Conditions</a>
+        <a href="#">Contact Us</a>
+    </div>
+
+    <div class="col">
+        <h4>My Account</h4>
+        <a href="#">Sign In</a>
+        <a href="#">View Cart</a>
+        <a href="#">My Wishlist</a>
+        <a href="#">Track My Order</a>
+        <a href="#">Help</a>
+    </div>
+
+    <div class="col install">
+        <h4> Install App</h4>
+        <p>From App Store or Google Play</p>
+        <div class="row">
+            <img src="img/pay/app.jpg" alt="">
+            <img src="img/pay/play.jpg" alt="">   
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function renderCheckoutSummary() {
+            const cart = getCart();
+            const box = document.getElementById("checkout-summary");
+            if (cart.length === 0) {
+                box.innerHTML = `<p class="cart-empty">Your bag is empty. <a href="shop.html">Go shopping</a></p>`;
+                return;
+            }
+            const subtotal = cartTotal(cart);
+            const shipping = shippingFor(subtotal);
+            const total = subtotal + shipping;
+            box.innerHTML = `
+                <h3>Order Summary</h3>
+                ${cart.map(i => `
+                    <div class="summary-line">
+                        <span>${i.name} × ${i.qty}</span>
+                        <span>$${(i.price * i.qty).toFixed(2)}</span>
+                    </div>`).join("")}
+                <div class="summary-line"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+                <div class="summary-line"><span>Shipping</span><span>${shipping === 0 ? "Free" : "$" + shipping.toFixed(2)}</span></div>
+                <div class="summary-line summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+            `;
+        }
+
+        document.addEventListener("DOMContentLoaded", renderCheckoutSummary);
+
+        document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("checkout-msg");
+            const cart = getCart();
+
+            if (cart.length === 0) {
+                msg.style.color = "#e63946";
+                msg.textContent = "Your bag is empty.";
+                return;
+            }
+
+            const { user } = await getCurrentUser();
+            if (!user) {
+                window.location.href = "login.html?redirect=checkout.html";
+                return;
+            }
+
+            const subtotal = cartTotal(cart);
+            const shipping = shippingFor(subtotal);
+
+            const payload = {
+                user_id: user.id,
+                total: subtotal + shipping,
+                shipping_fee: shipping,
+                status: "pending",
+                customer_name: document.getElementById("ck-name").value.trim(),
+                phone: document.getElementById("ck-phone").value.trim(),
+                email: document.getElementById("ck-email").value.trim(),
+                province: document.getElementById("ck-province").value,
+                address: document.getElementById("ck-address").value.trim(),
+                note: document.getElementById("ck-note").value.trim(),
+                payment_method: document.querySelector('input[name="payment"]:checked').value
+            };
+
+            msg.style.color = "#088178";
+            msg.textContent = "Placing your order...";
+
+            const { data: order, error: orderErr } = await supabaseClient
+                .from("orders").insert(payload).select().single();
+
+            if (orderErr) {
+                msg.style.color = "#e63946";
+                msg.textContent = orderErr.message;
+                return;
+            }
+
+            const items = cart.map(i => ({ order_id: order.id, product_id: i.id, quantity: i.qty, price: i.price }));
+            const { error: itemsErr } = await supabaseClient.from("order_items").insert(items);
+
+            if (itemsErr) {
+                msg.style.color = "#e63946";
+                msg.textContent = itemsErr.message;
+                return;
+            }
+
+            saveCart([]);
+document.getElementById("checkout-form").style.display = "none";
+const result = document.getElementById("order-result");
+result.style.display = "block";
+
+if (payload.payment_method === "bank") {
+    result.innerHTML = `
+        <h3>Scan to Pay</h3>
+        <p>Your order has been placed. Please scan the QR code below to complete your payment.</p>
+        <img src="img/payment-qr.jpg" alt="Payment QR Code" style="max-width:260px; margin:15px 0;">
+        <p><a href="account.html" class="btn-primary">Done — View My Orders</a></p>
+    `;
+} else {
+    result.innerHTML = `
+        <h3>Thank You!</h3>
+        <p>Your order has been placed successfully. We'll contact you soon to confirm delivery.</p>
+        <a href="account.html" class="btn-primary">View My Orders</a>
+    `;
+}
+        });
+    </script>
+</body>
+
+</html>

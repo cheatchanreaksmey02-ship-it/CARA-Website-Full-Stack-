@@ -20,7 +20,7 @@
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a></li>
                 <a href="#" id="close"><i class="far fa-times"></i></a>
             </ul>
         </div>
@@ -31,25 +31,107 @@
     </section>
 
     <section id="page-header" class="about-header">
-        <h2 id="pd-name">Product</h2>
-        <p id="pd-brand"></p>
+        <h2>Product Overview</h2>
     </section>
 
     <section class="section-p1" style="display:flex; gap:40px; flex-wrap:wrap; justify-content:center;">
-        <img id="pd-image" src="" alt="" style="max-width:400px; width:100%; border-radius:20px; object-fit:cover;">
-        <div style="max-width:450px;">
-            <div id="pd-stars" class="star"></div>
-            <h4 style="color:#088178; font-size:24px; margin:15px 0;" id="pd-price"></h4>
-            <p id="pd-description" style="color:#606063; line-height:1.7;"></p>
-            <p id="pd-stock" style="margin:15px 0; font-weight:600;"></p>
-            <button class="btn-primary" id="pd-add">Add to Cart</button>
+        <div class="product-media">
+            <img id="pd-image" src="" alt="">
         </div>
+        <div style="max-width:450px;">
+            <span id="pd-brand" style="color:#606063; font-size:13px; letter-spacing:1px; text-transform:uppercase;"></span>
+            <h2 id="pd-name" style="margin:6px 0 12px; font-size:28px; color:#1a1a1a;"></h2>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div id="pd-stars" class="star"></div>
+                <span id="pd-reviews" style="color:#9a9a9a; font-size:14px;"></span>
+            </div>
+            <h4 style="color:#088178; font-size:24px; margin:15px 0;" id="pd-price"></h4>
+            <hr class="pd-divider">
+
+            <div style="margin:25px 0 15px;">
+                <p style="margin-bottom:8px; font-size:13px; color:#1a1a1a;">Color: <span id="pd-color-name" style="color:#606063;"></span></p>
+                <div id="pd-color-swatch" class="color-swatch"></div>
+            </div>
+
+            <p id="pd-stock" style="margin:15px 0; font-weight:600;"></p>
+
+            <p style="font-weight:600; margin-bottom:8px; font-size:13px; color:#1a1a1a;">Quantity</p>
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:5px;">
+                <div class="qty-control">
+                    <button type="button" id="pd-qty-minus">-</button>
+                    <span id="pd-qty">1</span>
+                    <button type="button" id="pd-qty-plus">+</button>
+                </div>
+                <button class="btn-primary" id="pd-add"><i class="fal fa-shopping-bag" style="margin-right:8px;"></i>Add to Cart</button>
+                <button type="button" class="wishlist-btn" id="pd-wishlist"><i class="fal fa-heart"></i></button>
+            </div>
+
+            <div class="pd-trust-box">
+                <div class="pd-trust-item">
+                    <i class="fas fa-truck"></i>
+                    <div><strong>Free Shipping</strong>on orders over $50</div>
+                </div>
+                <div class="pd-trust-item">
+                    <i class="fas fa-undo-alt"></i>
+                    <div><strong>Easy Returns</strong>30-day return</div>
+                </div>
+                <div class="pd-trust-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div><strong>Secure Checkout</strong>100% protected</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2 class="sm-heading">You May Also Like</h2>
+        <div class="pro-container" id="shop-products"></div>
     </section>
 
     <footer class="section-p1">
         <div class="col">
             <img class="logo" src="img/logo.jpg" alt="">
             <h4>Contact</h4>
+            <p> <strong>Address:</strong>No.562, Street 32, Boeung Keng Kang, Phnom Penh</p>
+            <p><strong>Phone:</strong> +85 12 345 678</p>
+            <p><strong>Hours:</strong> 08:00 - 17:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow Us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Term & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4> Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="img/pay/app.jpg" alt="">
+                <img src="img/pay/play.jpg" alt="">
+            </div>
         </div>
     </footer>
 
@@ -64,7 +146,7 @@
             const id = new URLSearchParams(window.location.search).get("id");
             if (!id) { document.body.innerHTML = "<p style='padding:40px'>No product specified.</p>"; return; }
 
-            const { data: p, error } = await supabase.from("products").select("*").eq("id", id).single();
+            const { data: p, error } = await supabaseClient.from("products").select("*").eq("id", id).single();
             if (error || !p) { document.getElementById("pd-name").textContent = "Product not found"; return; }
 
             document.title = p.name + " - Cara Fashion";
@@ -74,9 +156,52 @@
             document.getElementById("pd-image").alt = p.name;
             document.getElementById("pd-stars").innerHTML = starsHtml(p.rating || 5);
             document.getElementById("pd-price").textContent = `$${Number(p.price).toFixed(2)}`;
-            document.getElementById("pd-description").textContent = p.description || "No description provided.";
+
+            // Deterministic "random" color/review generator seeded by product id —
+            // same product always gets the same values. Admin-set color/color_hex
+            // (if present on the product) overrides the generated one.
+            function seededRandom(seed) {
+                const x = Math.sin(seed) * 10000;
+                return x - Math.floor(x);
+            }
+            const COLOR_PALETTE = [
+                { name: "Natural", hex: "#f0e6d2" },
+                { name: "Sage Green", hex: "#a9b89e" },
+                { name: "Dusty Rose", hex: "#d9a8a0" },
+                { name: "Charcoal", hex: "#4a4a4a" },
+                { name: "Ivory", hex: "#f5f1e8" },
+                { name: "Navy", hex: "#2c3e50" },
+                { name: "Terracotta", hex: "#c1704f" },
+                { name: "Lavender", hex: "#c9bfe0" }
+            ];
+            const seed = Number(p.id) || 1;
+            const color = (p.color && p.color_hex)
+                ? { name: p.color, hex: p.color_hex }
+                : COLOR_PALETTE[Math.floor(seededRandom(seed) * COLOR_PALETTE.length)];
+            const reviewCount = Math.floor(seededRandom(seed * 7) * 300) + 15;
+
+            document.getElementById("pd-color-name").textContent = color.name;
+            document.getElementById("pd-color-swatch").style.background = color.hex;
+            document.getElementById("pd-reviews").textContent = `(${reviewCount} reviews)`;
+
+            document.getElementById("pd-wishlist").addEventListener("click", () => {
+                document.getElementById("pd-wishlist").classList.toggle("active");
+            });
+
             document.getElementById("pd-stock").textContent = p.stock > 0 ? `In stock: ${p.stock}` : "Out of stock";
-            document.getElementById("pd-add").addEventListener("click", () => addToCart(p));
+            loadRelatedProducts("#shop-products", p, 3);
+
+            let qty = 1;
+            const qtyLabel = document.getElementById("pd-qty");
+            document.getElementById("pd-qty-minus").addEventListener("click", () => {
+                qty = Math.max(1, qty - 1);
+                qtyLabel.textContent = qty;
+            });
+            document.getElementById("pd-qty-plus").addEventListener("click", () => {
+                qty += 1;
+                qtyLabel.textContent = qty;
+            });
+            document.getElementById("pd-add").addEventListener("click", () => addToCart(p, qty));
         })();
     </script>
 </body>

@@ -29,12 +29,11 @@ function productCardHtml(p) {
 }
 
 // Renders products into a container. limit=null means "all".
-// Renders products into a container. limit=null means "all".
 async function loadProducts(containerSelector, { limit = null, categoryName = null } = {}) {
   const container = document.querySelector(containerSelector);
   if (!container) return;
 
-  let query = supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false });
+  let query = supabaseClient.from("products").select("*, categories(name)").order("created_at", { ascending: false });
   // Only apply the DB limit when we are NOT filtering by category —
   // otherwise the limit can cut off rows before the category filter runs,
   // leaving nothing to show even though matching products exist.
@@ -56,7 +55,7 @@ async function loadProducts(containerSelector, { limit = null, categoryName = nu
   if (!filtered || filtered.length === 0) {
     container.innerHTML = `<p>No products yet — check back soon!</p>`;
     return;
-  
+  }
 
   container.innerHTML = filtered.map(productCardHtml).join("");
 
@@ -71,13 +70,42 @@ async function loadProducts(containerSelector, { limit = null, categoryName = nu
   });
 }
 
-  // wire "add to cart" buttons
+// Loads up to `limit` related products (same category first, then filled
+// with others) into a container, excluding the current product itself.
+async function loadRelatedProducts(containerSelector, product, limit = 3) {
+  const container = document.querySelector(containerSelector);
+  if (!container || !product) return;
+
+  const { data: all, error } = await supabaseClient
+    .from("products")
+    .select("*, categories(name)")
+    .neq("id", product.id);
+
+  if (error || !all) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const sameCategory = all.filter(p => p.category_id === product.category_id);
+  const others = all.filter(p => p.category_id !== product.category_id);
+
+  // shuffle so it's different each time / different per product
+  const shuffle = arr => arr.sort(() => Math.random() - 0.5);
+  const picks = shuffle(sameCategory).concat(shuffle(others)).slice(0, limit);
+
+  if (picks.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = picks.map(productCardHtml).join("");
+
   container.querySelectorAll(".cart-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       const id = btn.closest(".pro").dataset.id;
-      const product = filtered.find(p => String(p.id) === id);
-      addToCart(product);
+      const p = picks.find(x => String(x.id) === id);
+      addToCart(p);
     });
   });
 }

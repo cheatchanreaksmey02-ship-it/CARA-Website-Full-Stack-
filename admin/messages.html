@@ -46,7 +46,7 @@
             if (!auth) return;
 
             const body = document.getElementById("messages-body");
-            const { data, error } = await supabase.from("messages").select("*").order("created_at", { ascending: false });
+            const { data, error } = await supabaseClient.from("messages").select("*").order("created_at", { ascending: false });
             if (error) { body.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`; return; }
             if (!data.length) { body.innerHTML = `<tr><td colspan="4">No messages yet.</td></tr>`; return; }
             body.innerHTML = data.map(m => `

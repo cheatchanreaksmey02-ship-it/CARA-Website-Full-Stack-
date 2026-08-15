@@ -22,7 +22,7 @@
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a></li>
                 <a href="#" id="close"><i class="far fa-times"></i></a>
             </ul>
         </div>
@@ -472,9 +472,9 @@
     <script src="js/cart.js"></script>
     <script src="script.js"></script>
     <script>
-    loadProducts("#featured-products", { limit: 8, categoryName: "Feature" });
-    loadProducts("#new-arrivals", { limit: 8, categoryName: "New" });
-</script>
+        loadProducts("#featured-products", { limit: 3 });
+        loadProducts("#new-arrivals", { limit: 4 });
+    </script>
 </body>
 
 </html>
