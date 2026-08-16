@@ -25,12 +25,12 @@
             flex-shrink: 0;
         }
         .adash-brand {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            margin-bottom: 26px;
             padding: 0 8px;
-            color: #1a1a1a;
+        }
+        .adash-brand img {
+            width: 140px;
+            display: block;
         }
         .adash-nav a {
             display: flex;
@@ -64,7 +64,7 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-        .adash-topbar h1 { font-size: 24px; margin: 0 0 4px; color: #1a1a1a; }
+        .adash-topbar h1 { font-size: 30px; font-weight: 700; margin: 0 0 4px; color: #1a1a1a; }
         .adash-topbar p { color: #8a8a8e; margin: 0; font-size: 14px; }
         .adash-top-right { display: flex; align-items: center; gap: 18px; }
         .adash-search {
@@ -189,10 +189,39 @@
             .adash-kpis { grid-template-columns: repeat(2, 1fr); }
             .adash-content-grid { grid-template-columns: 1fr; }
         }
-        @media (max-width: 700px) {
-            .adash-sidebar { display: none; }
-            .adash-kpis { grid-template-columns: 1fr; }
+        @media (max-width: 900px) {
+            .adash-wrap { flex-direction: column; }
+            .adash-sidebar {
+                width: 100%; display: flex; align-items: center; gap: 4px;
+                overflow-x: auto; padding: 10px 12px; border-right: none;
+                border-bottom: 1px solid #ececec; -webkit-overflow-scrolling: touch;
+            }
+            .adash-brand { margin-bottom: 0; padding: 0 10px 0 0; flex-shrink: 0; }
+            .adash-brand img { width: 84px; }
+            .adash-nav { display: flex; gap: 2px; }
+            .adash-nav a { white-space: nowrap; margin-bottom: 0; padding: 8px 10px; font-size: 13px; }
+            .adash-nav-logout {
+                margin-top: 0; padding-top: 0; border-top: none;
+                display: flex; gap: 4px; flex-shrink: 0; margin-left: 8px;
+            }
+            .adash-nav-logout a { white-space: nowrap; padding: 8px 10px; font-size: 13px; }
+            .adash-main { padding: 18px 16px; }
         }
+        @media (max-width: 700px) {
+            .adash-kpis { grid-template-columns: 1fr; }
+            .adash-topbar { flex-direction: column; align-items: stretch; }
+            .adash-top-right { justify-content: space-between; }
+            .adash-search-box { display: none; }
+        }
+        @media (max-width: 480px) {
+            .adash-topbar h1 { font-size: 22px; }
+            .adash-avatar-text { display: none; }
+            .adash-kpi-card { padding: 14px; gap: 10px; }
+            .adash-kpi-icon { width: 34px; height: 34px; font-size: 14px; }
+            .adash-kpi-card h3 { font-size: 18px; }
+            .adash-panel { padding: 16px; }
+        }
+        .adash-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     </style>
 </head>
 
@@ -200,7 +229,7 @@
 
     <div class="adash-wrap">
         <nav class="adash-sidebar">
-            <div class="adash-brand">CARA</div>
+            <div class="adash-brand"><img src="../img/logo.jpg" alt="Cara"></div>
             <div class="adash-nav">
                 <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
                 <a href="products.html"><i class="fas fa-box"></i> Products</a>
@@ -281,6 +310,7 @@
                             <h3>Recent Orders</h3>
                             <a href="orders.html">View All</a>
                         </div>
+                        <div class="adash-table-scroll">
                         <table class="adash-table">
                             <thead>
                                 <tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>
@@ -289,6 +319,7 @@
                                 <tr><td colspan="6">Loading...</td></tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
 

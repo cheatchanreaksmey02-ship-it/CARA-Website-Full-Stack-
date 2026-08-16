@@ -4,36 +4,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - Cara Fashion</title>
+    <title>Contact Messages - Cara Fashion</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
     <link rel="stylesheet" href="../style.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f6f7f9; font-family: "Spartan", sans-serif; color: #1a1a1a; }
+        a { text-decoration: none; }
+
+        .msg-wrap { display: flex; min-height: 100vh; }
+
+        /* ---------- Sidebar ---------- */
+        .msg-sidebar {
+            width: 230px;
+            background: #fff;
+            border-right: 1px solid #ececec;
+            padding: 24px 14px;
+            flex-shrink: 0;
+        }
+        .msg-brand { padding: 0 8px 26px; }
+        .msg-brand img { width: 140px; display: block; }
+        .msg-nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 12px; border-radius: 10px;
+            color: #606063; font-size: 14px; margin-bottom: 4px;
+            transition: 0.15s ease;
+        }
+        .msg-nav a i { width: 18px; text-align: center; color: #a0a0a3; }
+        .msg-nav a:hover { background: #f3f4f6; color: #1a1a1a; }
+        .msg-nav a.active { background: #e6f2ef; color: #088178; font-weight: 600; }
+        .msg-nav a.active i { color: #088178; }
+        .msg-nav-logout {
+            margin-top: 26px; padding-top: 16px; border-top: 1px solid #ececec;
+            display: flex; gap: 14px; flex-wrap: wrap;
+        }
+        .msg-nav-logout a { padding: 0; margin: 0; display: inline-flex; }
+
+        /* ---------- Main ---------- */
+        .msg-main { flex: 1; padding: 26px 30px; min-width: 0; }
+
+        .msg-topbar {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 22px; flex-wrap: wrap; gap: 14px;
+        }
+        .msg-topbar h1 { font-size: 30px; font-weight: 700; margin: 0 0 4px; }
+        .msg-topbar p { color: #8a8a8e; margin: 0; font-size: 14px; }
+        .msg-top-right { display: flex; align-items: center; gap: 18px; }
+        .msg-search-box {
+            display: flex; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #ececec; border-radius: 10px;
+            padding: 9px 14px; color: #9a9a9e; font-size: 13px; min-width: 200px;
+        }
+        .msg-bell { position: relative; color: #606063; font-size: 17px; }
+        .msg-bell .dot {
+            position: absolute; top: -6px; right: -8px; background: #e63946; color: #fff;
+            font-size: 10px; font-weight: 700; border-radius: 50%; width: 16px; height: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .msg-avatar { display: flex; align-items: center; gap: 10px; }
+        .msg-avatar-circle {
+            width: 36px; height: 36px; border-radius: 50%; background: #e6f2ef; color: #088178;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .msg-avatar-text strong { display: block; font-size: 13px; }
+        .msg-avatar-text span { font-size: 12px; color: #9a9a9e; }
+
+        /* ---------- KPI cards ---------- */
+        .msg-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .msg-kpi-card {
+            background: #fff; border: 1px solid #ececec; border-radius: 16px;
+            padding: 18px; display: flex; gap: 14px; align-items: flex-start;
+        }
+        .msg-kpi-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+        }
+        .msg-kpi-card p.label { margin: 0; color: #8a8a8e; font-size: 12.5px; }
+        .msg-kpi-card h3 { margin: 4px 0 5px; font-size: 21px; }
+        .msg-kpi-delta { font-size: 11.5px; font-weight: 600; color: #9a9a9e; }
+        .msg-kpi-delta.up { color: #16a34a; }
+        .msg-kpi-delta.down { color: #e63946; }
+
+        /* ---------- Filter bar ---------- */
+        .msg-filterbar {
+            background: #fff; border: 1px solid #ececec; border-radius: 16px;
+            padding: 16px 18px; margin-bottom: 20px;
+            display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
+        }
+        .msg-filterbar .field { display: flex; flex-direction: column; gap: 6px; }
+        .msg-filterbar label { font-size: 12px; color: #8a8a8e; }
+        .msg-filterbar input, .msg-filterbar select {
+            border: 1px solid #ececec; border-radius: 9px; padding: 9px 12px; font-size: 13px;
+            font-family: inherit; color: #1a1a1a; min-width: 180px;
+        }
+        .msg-filterbar .search-field { position: relative; flex: 1; min-width: 220px; }
+        .msg-filterbar .search-field input { width: 100%; padding-left: 34px; }
+        .msg-filterbar .search-field i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9a9a9e; }
+        .msg-export-btn {
+            margin-left: auto; display: flex; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #ececec; border-radius: 9px;
+            padding: 10px 16px; font-size: 13px; color: #1a1a1a; cursor: pointer;
+        }
+
+        /* ---------- Content grid: list + detail ---------- */
+        .msg-content-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; align-items: start; }
+
+        .msg-panel { background: #fff; border: 1px solid #ececec; border-radius: 16px; overflow: hidden; }
+        .msg-list-head {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 18px; border-bottom: 1px solid #f2f2f2;
+        }
+        .msg-list-head h3 { margin: 0; font-size: 15px; }
+        .msg-list-head select { border: 1px solid #ececec; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; }
+
+        .msg-row {
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            border-bottom: 1px solid #f4f4f4; cursor: pointer; transition: 0.12s ease;
+        }
+        .msg-row:hover { background: #fafafa; }
+        .msg-row.selected { background: #f0f7f6; }
+        .msg-row .avatar {
+            width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; color: #fff;
+        }
+        .msg-row-body { flex: 1; min-width: 0; }
+        .msg-row-top { display: flex; align-items: center; gap: 6px; }
+        .msg-row-top .name { font-weight: 600; font-size: 13.5px; }
+        .msg-row-top .dot-unread { width: 7px; height: 7px; border-radius: 50%; background: #088178; }
+        .msg-row-email { font-size: 11.5px; color: #9a9a9e; }
+        .msg-row-subject { font-size: 13px; font-weight: 600; margin-top: 3px; }
+        .msg-row-preview { font-size: 12.5px; color: #9a9a9e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+        .msg-row-meta { text-align: right; flex-shrink: 0; }
+        .msg-row-time { font-size: 11.5px; color: #9a9a9e; display: block; margin-bottom: 6px; }
+        .msg-badge { padding: 4px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 700; display: inline-block; }
+        .msg-badge.unread { background: #e6f2ef; color: #088178; }
+        .msg-badge.replied { background: #eaf1fb; color: #2563eb; }
+        .msg-badge.pending { background: #fdf0e2; color: #d97706; }
+        .msg-row-chev { color: #c4c4c8; font-size: 13px; }
+
+        .msg-pagination {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; font-size: 12.5px; color: #9a9a9e;
+        }
+        .msg-pagination .pages { display: flex; gap: 6px; }
+        .msg-pagination button {
+            width: 28px; height: 28px; border-radius: 8px; border: 1px solid #ececec;
+            background: #fff; color: #606063; font-size: 12px; cursor: pointer;
+        }
+        .msg-pagination button.active { background: #088178; color: #fff; border-color: #088178; }
+
+        /* ---------- Detail panel ---------- */
+        .msg-detail-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px; border-bottom: 1px solid #f2f2f2;
+        }
+        .msg-detail-head h3 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+        .msg-detail-actions { display: flex; gap: 8px; }
+        .msg-detail-actions button {
+            width: 32px; height: 32px; border-radius: 8px; border: 1px solid #ececec;
+            background: #fff; color: #606063; cursor: pointer;
+        }
+        .msg-detail-body { padding: 18px; }
+        .msg-detail-from { display: flex; gap: 12px; margin-bottom: 16px; }
+        .msg-detail-from .avatar {
+            width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #fff; font-size: 15px;
+        }
+        .msg-detail-from-text { flex: 1; }
+        .msg-detail-from-text strong { font-size: 13.5px; display: block; }
+        .msg-detail-from-text span { font-size: 12px; color: #9a9a9e; }
+        .msg-detail-from-time { font-size: 11.5px; color: #9a9a9e; text-align: right; white-space: nowrap; }
+        .msg-detail-text { font-size: 13.5px; line-height: 1.7; color: #33333a; white-space: pre-wrap; }
+
+        .msg-reply { padding: 18px; border-top: 1px solid #f2f2f2; }
+        .msg-reply h4 { margin: 0 0 10px; font-size: 14px; }
+        .msg-reply textarea {
+            width: 100%; min-height: 90px; border: 1px solid #ececec; border-radius: 10px;
+            padding: 12px; font-family: inherit; font-size: 13px; resize: vertical;
+        }
+        .msg-reply-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .msg-reply-icons { display: flex; gap: 14px; color: #9a9a9e; font-size: 15px; }
+        .msg-send-btn {
+            background: #088178; color: #fff; border: none; border-radius: 9px;
+            padding: 10px 20px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+        }
+        .msg-send-btn:disabled { opacity: 0.6; cursor: default; }
+        .msg-empty { padding: 60px 20px; text-align: center; color: #9a9a9e; font-size: 13.5px; }
+
+        @media (max-width: 1050px) {
+            .msg-kpis { grid-template-columns: repeat(2, 1fr); }
+            .msg-content-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .msg-wrap { flex-direction: column; }
+            .msg-sidebar {
+                width: 100%; display: flex; align-items: center; gap: 4px;
+                overflow-x: auto; padding: 10px 12px; border-right: none;
+                border-bottom: 1px solid #ececec; -webkit-overflow-scrolling: touch;
+            }
+            .msg-brand { padding: 0 10px 0 0; flex-shrink: 0; }
+            .msg-brand img { width: 84px; }
+            .msg-nav { display: flex; gap: 2px; }
+            .msg-nav a { white-space: nowrap; margin-bottom: 0; padding: 8px 10px; font-size: 13px; }
+            .msg-nav-logout {
+                margin-top: 0; padding-top: 0; border-top: none;
+                flex-shrink: 0; margin-left: 8px;
+            }
+            .msg-nav-logout a { white-space: nowrap; padding: 8px 10px; font-size: 13px; }
+            .msg-main { padding: 18px 16px; }
+        }
+        @media (max-width: 700px) {
+            .msg-kpis { grid-template-columns: 1fr; }
+            .msg-topbar { flex-direction: column; align-items: stretch; }
+            .msg-search-box { display: none; }
+            .msg-filterbar { flex-direction: column; align-items: stretch; }
+            .msg-export-btn { margin-left: 0; }
+        }
+        @media (max-width: 480px) {
+            .msg-topbar h1 { font-size: 22px; }
+            .msg-avatar-text { display: none; }
+            .msg-kpi-card { padding: 14px; gap: 10px; }
+            .msg-kpi-icon { width: 34px; height: 34px; font-size: 14px; }
+            .msg-filterbar { padding: 12px; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <section id="header">
-        <a href="../index.html"><img src="../img/logo.jpg" class="logo" alt=""></a>
-        <div><ul id="navbar"><li><a href="../index.html">← Back to Site</a></li></ul></div>
-    </section>
-
-    <div class="dash-wrap">
-        <nav class="dash-sidebar">
-            <a href="dashboard.html">Overview</a>
-            <a href="products.html">Products</a>
-            <a href="orders.html">Orders</a>
-            <a href="messages.html" class="active">Messages</a>
-            <a href="users.html">Users</a>
+    <div class="msg-wrap">
+        <nav class="msg-sidebar">
+            <div class="msg-brand"><img src="../img/logo.jpg" alt="Cara"></div>
+            <div class="msg-nav">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Overview</a>
+                <a href="products.html"><i class="fas fa-box"></i> Products</a>
+                <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                <a href="messages.html" class="active"><i class="fas fa-envelope"></i> Messages</a>
+                <a href="users.html"><i class="fas fa-users"></i> Users</a>
+            </div>
+            <div class="msg-nav-logout">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                <a href="#" id="msg-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
         </nav>
-        <main class="dash-main">
-            <h2>Contact Messages</h2>
-            <table class="admin-table">
-                <thead>
-                    <tr><th>From</th><th>Subject</th><th>Message</th><th>Date</th></tr>
-                </thead>
-                <tbody id="messages-body">
-                    <tr><td colspan="4">Loading...</td></tr>
-                </tbody>
-            </table>
+
+        <main class="msg-main">
+            <div class="msg-topbar">
+                <div>
+                    <h1>Contact Messages</h1>
+                    <p>View and respond to customer messages.</p>
+                </div>
+                <div class="msg-top-right">
+                    <div class="msg-search-box"><i class="fas fa-search"></i> Search...</div>
+                    <div class="msg-bell"><i class="far fa-bell"></i><span class="dot" id="msg-unread-badge">0</span></div>
+                    <div class="msg-avatar">
+                        <div class="msg-avatar-circle" id="msg-avatar-letter">A</div>
+                        <div class="msg-avatar-text">
+                            <strong id="msg-admin-name">Admin</strong>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="msg-kpis">
+                <div class="msg-kpi-card">
+                    <div class="msg-kpi-icon" style="background:#e6f2ef; color:#088178;"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <p class="label">Total Messages</p>
+                        <h3 id="kpi-total">-</h3>
+                    </div>
+                </div>
+                <div class="msg-kpi-card">
+                    <div class="msg-kpi-icon" style="background:#eaf1fb; color:#2563eb;"><i class="fas fa-envelope-open"></i></div>
+                    <div>
+                        <p class="label">Unread</p>
+                        <h3 id="kpi-unread">-</h3>
+                    </div>
+                </div>
+                <div class="msg-kpi-card">
+                    <div class="msg-kpi-icon" style="background:#f2ecfb; color:#7c3aed;"><i class="fas fa-reply"></i></div>
+                    <div>
+                        <p class="label">Replied</p>
+                        <h3 id="kpi-replied">-</h3>
+                    </div>
+                </div>
+                <div class="msg-kpi-card">
+                    <div class="msg-kpi-icon" style="background:#fdf0e2; color:#d97706;"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <p class="label">Pending</p>
+                        <h3 id="kpi-pending">-</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="msg-filterbar">
+                <div class="field search-field">
+                    <label>&nbsp;</label>
+                    <div style="position:relative;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="msg-search-input" placeholder="Search by name, email, subject...">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Status</label>
+                    <select id="msg-status-filter">
+                        <option value="">All Status</option>
+                        <option value="unread">Unread</option>
+                        <option value="replied">Replied</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <button class="msg-export-btn"><i class="fas fa-download"></i> Export</button>
+            </div>
+
+            <div class="msg-content-grid">
+                <div class="msg-panel">
+                    <div class="msg-list-head">
+                        <h3 id="msg-count-heading">Messages (0)</h3>
+                        <select id="msg-sort">
+                            <option value="newest">Sort: Newest</option>
+                            <option value="oldest">Sort: Oldest</option>
+                        </select>
+                    </div>
+                    <div id="msg-list"></div>
+                    <div class="msg-pagination">
+                        <span id="msg-pagination-label">Showing 0 of 0 messages</span>
+                        <div class="pages" id="msg-pages"></div>
+                    </div>
+                </div>
+
+                <div class="msg-panel" id="msg-detail-panel">
+                    <div class="msg-empty">Select a message to view it here.</div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -41,21 +347,224 @@
     <script src="../js/supabase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script>
+        const AVATAR_COLORS = ["#088178", "#2563eb", "#7c3aed", "#d97706", "#e63946", "#0891b2", "#c026d3"];
+        function avatarColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+        }
+        function initials(name) {
+            return (name || "?").trim().split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+        }
+        function timeAgo(dateStr) {
+            const d = new Date(dateStr);
+            const diffMs = Date.now() - d.getTime();
+            const mins = Math.floor(diffMs / 60000);
+            if (mins < 1) return "just now";
+            if (mins < 60) return `${mins} min${mins > 1 ? "s" : ""} ago`;
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return `${hrs} hour${hrs > 1 ? "s" : ""} ago`;
+            return d.toLocaleDateString();
+        }
+
+        let ALL_MESSAGES = [];
+        let SELECTED_ID = null;
+        let PAGE = 1;
+        const PAGE_SIZE = 8;
+
+        function computeStatus(m) {
+            return m.status || "unread";
+        }
+
+        function filteredMessages() {
+            const q = (document.getElementById("msg-search-input").value || "").toLowerCase();
+            const statusF = document.getElementById("msg-status-filter").value;
+            const sort = document.getElementById("msg-sort").value;
+            let list = ALL_MESSAGES.filter(m => {
+                const matchesQ = !q || (m.name || "").toLowerCase().includes(q) ||
+                    (m.email || "").toLowerCase().includes(q) ||
+                    (m.subject || "").toLowerCase().includes(q);
+                const matchesStatus = !statusF || computeStatus(m) === statusF;
+                return matchesQ && matchesStatus;
+            });
+            list.sort((a, b) => sort === "oldest"
+                ? new Date(a.created_at) - new Date(b.created_at)
+                : new Date(b.created_at) - new Date(a.created_at));
+            return list;
+        }
+
+        function renderKpis() {
+            const total = ALL_MESSAGES.length;
+            const unread = ALL_MESSAGES.filter(m => computeStatus(m) === "unread").length;
+            const replied = ALL_MESSAGES.filter(m => computeStatus(m) === "replied").length;
+            const pending = ALL_MESSAGES.filter(m => computeStatus(m) === "pending").length;
+            document.getElementById("kpi-total").textContent = total;
+            document.getElementById("kpi-unread").textContent = unread;
+            document.getElementById("kpi-replied").textContent = replied;
+            document.getElementById("kpi-pending").textContent = pending;
+            document.getElementById("msg-unread-badge").textContent = unread;
+        }
+
+        function renderList() {
+            const list = filteredMessages();
+            document.getElementById("msg-count-heading").textContent = `Messages (${list.length})`;
+
+            const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+            if (PAGE > totalPages) PAGE = totalPages;
+            const start = (PAGE - 1) * PAGE_SIZE;
+            const pageItems = list.slice(start, start + PAGE_SIZE);
+
+            const listEl = document.getElementById("msg-list");
+            if (!pageItems.length) {
+                listEl.innerHTML = `<div class="msg-empty">No messages found.</div>`;
+            } else {
+                listEl.innerHTML = pageItems.map(m => {
+                    const status = computeStatus(m);
+                    const color = avatarColor(m.email || m.name || "?");
+                    const isSelected = m.id === SELECTED_ID;
+                    return `
+                    <div class="msg-row ${isSelected ? "selected" : ""}" data-id="${m.id}">
+                        <div class="avatar" style="background:${color};">${initials(m.name)}</div>
+                        <div class="msg-row-body">
+                            <div class="msg-row-top">
+                                <span class="name">${m.name || "Unknown"}</span>
+                                ${status === "unread" ? '<span class="dot-unread"></span>' : ""}
+                            </div>
+                            <div class="msg-row-email">${m.email || ""}</div>
+                            <div class="msg-row-subject">${m.subject || "(no subject)"}</div>
+                            <div class="msg-row-preview">${(m.message || "").slice(0, 60)}</div>
+                        </div>
+                        <div class="msg-row-meta">
+                            <span class="msg-row-time">${timeAgo(m.created_at)}</span>
+                            <span class="msg-badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                        </div>
+                        <i class="fas fa-chevron-right msg-row-chev"></i>
+                    </div>`;
+                }).join("");
+            }
+
+            document.getElementById("msg-pagination-label").textContent =
+                `Showing ${list.length ? start + 1 : 0} to ${Math.min(start + PAGE_SIZE, list.length)} of ${list.length} messages`;
+
+            const pagesEl = document.getElementById("msg-pages");
+            let pagesHtml = "";
+            for (let p = 1; p <= totalPages; p++) {
+                pagesHtml += `<button class="${p === PAGE ? "active" : ""}" data-page="${p}">${p}</button>`;
+            }
+            pagesEl.innerHTML = pagesHtml;
+
+            listEl.querySelectorAll(".msg-row").forEach(row => {
+                row.addEventListener("click", () => selectMessage(Number(row.dataset.id)));
+            });
+            pagesEl.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", () => { PAGE = Number(btn.dataset.page); renderList(); });
+            });
+        }
+
+        function renderDetail() {
+            const panel = document.getElementById("msg-detail-panel");
+            const m = ALL_MESSAGES.find(x => x.id === SELECTED_ID);
+            if (!m) {
+                panel.innerHTML = `<div class="msg-empty">Select a message to view it here.</div>`;
+                return;
+            }
+            const status = computeStatus(m);
+            const color = avatarColor(m.email || m.name || "?");
+            panel.innerHTML = `
+                <div class="msg-detail-head">
+                    <h3>${m.subject || "(no subject)"} <span class="msg-badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></h3>
+                    <div class="msg-detail-actions">
+                        <button title="Reply"><i class="fas fa-reply"></i></button>
+                        <button title="Star"><i class="far fa-star"></i></button>
+                        <button title="More"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                </div>
+                <div class="msg-detail-body">
+                    <div class="msg-detail-from">
+                        <div class="avatar" style="background:${color};">${initials(m.name)}</div>
+                        <div class="msg-detail-from-text">
+                            <strong>${m.name || "Unknown"} &lt;${m.email || ""}&gt;</strong>
+                            <span>To: support@cara.com</span>
+                        </div>
+                        <div class="msg-detail-from-time">${new Date(m.created_at).toLocaleDateString()}<br>${new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
+                    </div>
+                    <div class="msg-detail-text">${(m.message || "").replace(/</g, "&lt;")}</div>
+                    ${m.admin_reply ? `<hr style="margin:16px 0; border:none; border-top:1px solid #f2f2f2;"><div style="font-size:12.5px; color:#088178; font-weight:700; margin-bottom:6px;">Your reply</div><div class="msg-detail-text">${m.admin_reply.replace(/</g, "&lt;")}</div>` : ""}
+                </div>
+                <div class="msg-reply">
+                    <h4>Reply</h4>
+                    <textarea id="msg-reply-text" placeholder="Type your reply...">${m.admin_reply || ""}</textarea>
+                    <div class="msg-reply-bottom">
+                        <div class="msg-reply-icons">
+                            <i class="fas fa-paperclip"></i>
+                            <i class="far fa-smile"></i>
+                            <i class="far fa-image"></i>
+                        </div>
+                        <button class="msg-send-btn" id="msg-send-btn">Send Reply</button>
+                    </div>
+                </div>`;
+
+            document.getElementById("msg-send-btn").addEventListener("click", () => sendReply(m.id));
+
+            if (status === "unread") markStatus(m.id, "pending", false);
+        }
+
+        function selectMessage(id) {
+            SELECTED_ID = id;
+            renderList();
+            renderDetail();
+        }
+
+        async function markStatus(id, status, rerenderDetail = true) {
+            const m = ALL_MESSAGES.find(x => x.id === id);
+            if (m) m.status = status;
+            renderKpis();
+            renderList();
+            if (rerenderDetail) renderDetail();
+            await supabaseClient.from("messages").update({ status }).eq("id", id);
+        }
+
+        async function sendReply(id) {
+            const text = document.getElementById("msg-reply-text").value.trim();
+            if (!text) return;
+            const btn = document.getElementById("msg-send-btn");
+            btn.disabled = true;
+            btn.textContent = "Sending...";
+            const m = ALL_MESSAGES.find(x => x.id === id);
+            if (m) { m.admin_reply = text; m.status = "replied"; }
+            const { error } = await supabaseClient.from("messages")
+                .update({ admin_reply: text, status: "replied", replied_at: new Date().toISOString() })
+                .eq("id", id);
+            btn.disabled = false;
+            btn.textContent = "Send Reply";
+            if (error) { alert(error.message); return; }
+            renderKpis();
+            renderList();
+            renderDetail();
+        }
+
         (async () => {
             const auth = await requireAuth(true, "../login.html?redirect=admin/messages.html", "../index.html");
             if (!auth) return;
 
-            const body = document.getElementById("messages-body");
+            const adminName = auth.profile?.full_name || auth.user.email;
+            document.getElementById("msg-admin-name").textContent = adminName;
+            document.getElementById("msg-avatar-letter").textContent = adminName.charAt(0).toUpperCase();
+            document.getElementById("msg-logout").addEventListener("click", (e) => { e.preventDefault(); logoutUser(); });
+
             const { data, error } = await supabaseClient.from("messages").select("*").order("created_at", { ascending: false });
-            if (error) { body.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`; return; }
-            if (!data.length) { body.innerHTML = `<tr><td colspan="4">No messages yet.</td></tr>`; return; }
-            body.innerHTML = data.map(m => `
-                <tr>
-                    <td>${m.name}<br><small>${m.email}</small></td>
-                    <td>${m.subject || "-"}</td>
-                    <td>${m.message}</td>
-                    <td>${new Date(m.created_at).toLocaleDateString()}</td>
-                </tr>`).join("");
+            if (error) {
+                document.getElementById("msg-list").innerHTML = `<div class="msg-empty">${error.message}</div>`;
+                return;
+            }
+            ALL_MESSAGES = data || [];
+            renderKpis();
+            renderList();
+            renderDetail();
+
+            document.getElementById("msg-search-input").addEventListener("input", () => { PAGE = 1; renderList(); });
+            document.getElementById("msg-status-filter").addEventListener("change", () => { PAGE = 1; renderList(); });
+            document.getElementById("msg-sort").addEventListener("change", () => { PAGE = 1; renderList(); });
         })();
     </script>
 </body>

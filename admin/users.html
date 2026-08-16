@@ -7,67 +7,436 @@
     <title>Manage Users - Cara Fashion</title>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
     <link rel="stylesheet" href="../style.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #f6f7f9; }
+
+        .adash-wrap { display: flex; min-height: 100vh; font-family: inherit; }
+
+        .adash-sidebar { width: 240px; background: #fff; border-right: 1px solid #ececec; padding: 24px 16px; flex-shrink: 0; }
+        .adash-brand { display: flex; align-items: center; margin-bottom: 30px; padding: 0 8px; }
+        .adash-brand img { height: 42px; width: auto; object-fit: contain; }
+        .adash-nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 12px; border-radius: 10px;
+            color: #606063; text-decoration: none; font-size: 14px;
+            margin-bottom: 4px; transition: 0.15s ease;
+        }
+        .adash-nav a i { width: 18px; text-align: center; color: #a0a0a3; }
+        .adash-nav a:hover { background: #f3f4f6; color: #1a1a1a; }
+        .adash-nav a.active { background: #e6f2ef; color: #088178; font-weight: 600; }
+        .adash-nav a.active i { color: #088178; }
+        .adash-nav-logout { margin-top: 30px; padding-top: 16px; border-top: 1px solid #ececec; }
+
+        .adash-main { flex: 1; padding: 28px 32px; min-width: 0; }
+
+        .adash-topbar {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 22px; flex-wrap: wrap; gap: 16px;
+        }
+        .adash-topbar h1 { font-size: 24px; margin: 0 0 4px; color: #1a1a1a; }
+        .adash-topbar p { color: #8a8a8e; margin: 0; font-size: 14px; }
+        .adash-top-right { display: flex; align-items: center; gap: 18px; }
+        .adash-search-box {
+            display: flex; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #ececec; border-radius: 10px;
+            padding: 9px 14px; color: #9a9a9e; font-size: 13px; min-width: 200px;
+        }
+        .adash-avatar { display: flex; align-items: center; gap: 10px; }
+        .adash-avatar-circle {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: #e6f2ef; color: #088178;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .adash-avatar-text strong { display: block; font-size: 13px; color: #1a1a1a; }
+        .adash-avatar-text span { font-size: 12px; color: #9a9a9e; }
+
+        /* ---- KPI cards ---- */
+        .u-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+        .u-kpi-card { background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 18px; display: flex; gap: 12px; align-items: flex-start; }
+        .u-kpi-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .u-kpi-card p.label { margin: 0; color: #8a8a8e; font-size: 12px; }
+        .u-kpi-card h3 { margin: 4px 0 6px; font-size: 20px; color: #1a1a1a; }
+        .u-kpi-delta { font-size: 11px; font-weight: 600; }
+        .u-kpi-delta.up { color: #16a34a; }
+        .u-kpi-delta.down { color: #e63946; }
+
+        /* ---- filters ---- */
+        .u-filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 14px; margin-bottom: 18px; }
+        .u-filters input[type="text"], .u-filters select {
+            border: 1px solid #ececec; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #1a1a1a; background: #fff;
+        }
+        .u-search-input { flex: 1; min-width: 220px; }
+        .u-btn { display: flex; align-items: center; gap: 8px; border: 1px solid #ececec; border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: #1a1a1a; }
+        .u-btn:hover { border-color: #088178; color: #088178; }
+
+        /* ---- table ---- */
+        .u-panel { background: #fff; border: 1px solid #ececec; border-radius: 16px; overflow: hidden; }
+        table.u-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.u-table th { text-align: left; padding: 12px 14px; color: #9a9a9e; font-weight: 600; border-bottom: 1px solid #ececec; font-size: 12px; background: #fafafa; }
+        table.u-table td { padding: 12px 14px; border-bottom: 1px solid #f4f4f4; color: #1a1a1a; vertical-align: middle; }
+        .u-user-cell { display: flex; align-items: center; gap: 12px; }
+        .u-user-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; flex-shrink: 0;
+        }
+        .u-user-name { font-weight: 600; }
+        .u-role-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .u-icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #ececec; background: #fff; color: #606063; cursor: pointer; }
+        .u-icon-btn:hover { border-color: #088178; color: #088178; }
+
+        .u-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; font-size: 13px; color: #8a8a8e; flex-wrap: wrap; gap: 10px; }
+        .u-page-btns { display: flex; gap: 6px; align-items: center; }
+        .u-page-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #ececec; background: #fff; color: #606063; cursor: pointer; font-size: 13px; }
+        .u-page-btn.active { border-color: #088178; color: #088178; background: #f4faf9; font-weight: 700; }
+        .u-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+        /* ---- modal ---- */
+        .u-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); align-items: center; justify-content: center; z-index: 999; padding: 20px; }
+        .u-modal-overlay.open { display: flex; }
+        .u-modal { background: #fff; border-radius: 16px; padding: 26px; width: 100%; max-width: 380px; }
+        .u-modal h3 { margin: 0 0 4px; }
+        .u-modal p.sub { color: #8a8a8e; font-size: 13px; margin: 0 0 16px; }
+        .u-modal label { display: block; font-size: 12px; font-weight: 600; color: #606063; margin: 10px 0 5px; }
+        .u-modal select { width: 100%; padding: 10px 12px; border: 1px solid #ececec; border-radius: 8px; font-size: 13px; }
+        .u-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        @media (max-width: 1000px) { .u-kpis { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 900px) {
+            .adash-wrap { flex-direction: column; }
+            .adash-sidebar {
+                width: 100%; display: flex; align-items: center; gap: 4px;
+                overflow-x: auto; padding: 10px 12px; border-right: none;
+                border-bottom: 1px solid #ececec; -webkit-overflow-scrolling: touch;
+            }
+            .adash-brand { margin-bottom: 0; padding: 0 10px 0 0; flex-shrink: 0; }
+            .adash-brand img { width: 84px; }
+            .adash-nav { display: flex; gap: 2px; }
+            .adash-nav a { white-space: nowrap; margin-bottom: 0; padding: 8px 10px; font-size: 13px; }
+            .adash-nav-logout {
+                margin-top: 0; padding-top: 0; border-top: none;
+                display: flex; gap: 4px; flex-shrink: 0; margin-left: 8px;
+            }
+            .adash-nav-logout a { white-space: nowrap; padding: 8px 10px; font-size: 13px; }
+            .adash-main { padding: 18px 16px; }
+        }
+        @media (max-width: 700px) {
+            .adash-topbar { flex-direction: column; align-items: stretch; }
+            .adash-search-box { display: none; }
+            .u-filters { flex-direction: column; align-items: stretch; }
+        }
+        @media (max-width: 480px) {
+            .u-kpis { grid-template-columns: 1fr; }
+            .adash-topbar h1 { font-size: 22px; }
+            .adash-avatar-text { display: none; }
+            .u-kpi-card { padding: 14px; gap: 10px; }
+            .u-kpi-icon { width: 34px; height: 34px; font-size: 14px; }
+            .u-filters { padding: 12px; }
+        }
+        .u-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        @media (max-width: 600px) {
+            .u-table-scroll { overflow-x: visible; }
+            table.u-table, table.u-table thead, table.u-table tbody,
+            table.u-table th, table.u-table td, table.u-table tr { display: block; }
+            table.u-table thead { display: none; }
+            table.u-table tr {
+                border: 1px solid #ececec; border-radius: 12px;
+                margin: 0 0 12px; padding: 10px 12px; background: #fff;
+            }
+            table.u-table td {
+                border-bottom: none; padding: 7px 0;
+                display: flex; justify-content: space-between; align-items: center;
+                gap: 10px; text-align: right;
+            }
+            table.u-table td::before {
+                content: attr(data-label);
+                font-weight: 600; color: #9a9a9e; font-size: 11px;
+                text-align: left; flex-shrink: 0;
+            }
+            table.u-table td[data-label="User"] { text-align: left; }
+            table.u-table td[data-label="User"]::before { display: none; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <section id="header">
-        <a href="../index.html"><img src="../img/logo.jpg" class="logo" alt=""></a>
-        <div><ul id="navbar"><li><a href="../index.html">← Back to Site</a></li></ul></div>
-    </section>
-
-    <div class="dash-wrap">
-        <nav class="dash-sidebar">
-            <a href="dashboard.html">Overview</a>
-            <a href="products.html">Products</a>
-            <a href="orders.html">Orders</a>
-            <a href="messages.html">Messages</a>
-            <a href="users.html" class="active">Users</a>
+    <div class="adash-wrap">
+        <nav class="adash-sidebar">
+            <div class="adash-brand"><img src="../img/logo.jpg" alt="Cara"></div>
+            <div class="adash-nav">
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="products.html"><i class="fas fa-box"></i> Products</a>
+                <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                <a href="users.html" class="active"><i class="fas fa-users"></i> Users</a>
+                <a href="messages.html"><i class="fas fa-envelope"></i> Messages</a>
+            </div>
+            <div class="adash-nav-logout">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                <a href="#" id="adash-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
         </nav>
-        <main class="dash-main">
-            <h2>Manage Users</h2>
-            <p style="color:#606063; margin-bottom:15px;">Promote trusted users to Admin, or revoke access.</p>
-            <table class="admin-table">
-                <thead>
-                    <tr><th>Name</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
-                </thead>
-                <tbody id="users-body">
-                    <tr><td colspan="4">Loading...</td></tr>
-                </tbody>
-            </table>
+
+        <main class="adash-main">
+            <div class="adash-topbar">
+                <div>
+                    <h1>Manage Users</h1>
+                    <p>View and manage all users who have access to the system.</p>
+                </div>
+                <div class="adash-top-right">
+                    <div class="adash-search-box"><i class="fas fa-search"></i> Search...</div>
+                    <div class="adash-avatar">
+                        <div class="adash-avatar-circle" id="u-avatar-letter">A</div>
+                        <div class="adash-avatar-text">
+                            <strong id="u-admin-name">Admin</strong>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="u-kpis">
+                <div class="u-kpi-card">
+                    <div class="u-kpi-icon" style="background:#e6f2ef; color:#088178;"><i class="fas fa-users"></i></div>
+                    <div><p class="label">Total Users</p><h3 id="kpi-total">-</h3></div>
+                </div>
+                <div class="u-kpi-card">
+                    <div class="u-kpi-icon" style="background:#f2ecfb; color:#7c3aed;"><i class="fas fa-shield-alt"></i></div>
+                    <div><p class="label">Admins</p><h3 id="kpi-admins">-</h3></div>
+                </div>
+                <div class="u-kpi-card">
+                    <div class="u-kpi-icon" style="background:#eaf1fb; color:#2563eb;"><i class="fas fa-user"></i></div>
+                    <div><p class="label">Customers</p><h3 id="kpi-customers">-</h3></div>
+                </div>
+            </div>
+
+            <div class="u-filters">
+                <input type="text" id="u-search" class="u-search-input" placeholder="Search by name, email...">
+                <select id="u-role-filter">
+                    <option value="">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">Customer</option>
+                </select>
+                <button type="button" class="u-btn" id="u-export"><i class="fas fa-download"></i> Export</button>
+            </div>
+
+            <div class="u-panel">
+                <div class="u-table-scroll">
+                <table class="u-table">
+                    <thead>
+                        <tr><th>User</th><th>Role</th><th>Email</th><th>Orders</th><th>Date Joined</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="users-body">
+                        <tr><td colspan="6">Loading...</td></tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="u-footer">
+                    <span id="u-showing"></span>
+                    <div class="u-page-btns" id="u-pagination"></div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- Edit role modal -->
+    <div class="u-modal-overlay" id="u-modal-overlay">
+        <div class="u-modal">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Edit Role</h3>
+                <button type="button" id="u-modal-close" style="background:none; border:none; font-size:20px; color:#9a9a9e; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <p class="sub" id="u-modal-user-name"></p>
+            <label>Role</label>
+            <select id="u-role-select">
+                <option value="user">Customer</option>
+                <option value="admin">Admin</option>
+            </select>
+            <p id="u-modal-msg" style="font-size:12px; margin-top:8px;"></p>
+            <div class="u-modal-actions">
+                <button type="button" class="u-btn" style="flex:1; background:#088178; color:#fff; border-color:#088178;" id="u-modal-save">Save</button>
+                <button type="button" class="u-btn" id="u-modal-cancel">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script>
-        async function toggleRole(id, currentRole) {
-            const newRole = currentRole === "admin" ? "user" : "admin";
-            if (!confirm(`Change this user's role to "${newRole}"?`)) return;
-            const { error } = await supabaseClient.from("profiles").update({ role: newRole }).eq("id", id);
-            if (error) { alert(error.message); return; }
-            loadUsers();
+        let allUsers = [];
+        let orderCounts = {};
+        let currentPage = 1;
+        const PAGE_SIZE = 10;
+        let editingUserId = null;
+
+        function roleBadge(role) {
+            if (role === "admin") return { label: "Admin", bg: "#f2ecfb", color: "#7c3aed" };
+            return { label: "Customer", bg: "#eaf1fb", color: "#2563eb" };
+        }
+        function avatarColor(id) {
+            const colors = [
+                { bg: "#e6f2ef", color: "#088178" }, { bg: "#f2ecfb", color: "#7c3aed" },
+                { bg: "#eaf1fb", color: "#2563eb" }, { bg: "#fdf0e2", color: "#d97706" },
+                { bg: "#fde8e8", color: "#e63946" }
+            ];
+            let hash = 0;
+            for (const ch of String(id)) hash = (hash + ch.charCodeAt(0)) % colors.length;
+            return colors[hash];
         }
 
-        async function loadUsers() {
+        function getFiltered() {
+            const term = document.getElementById("u-search").value.trim().toLowerCase();
+            const role = document.getElementById("u-role-filter").value;
+            return allUsers.filter(u => {
+                if (role && u.role !== role) return false;
+                if (term && !`${u.full_name || ""} ${u.email || ""}`.toLowerCase().includes(term)) return false;
+                return true;
+            });
+        }
+
+        function renderKpis() {
+            const total = allUsers.length;
+            const admins = allUsers.filter(u => u.role === "admin").length;
+            const customers = allUsers.filter(u => u.role === "user").length;
+            document.getElementById("kpi-total").textContent = total;
+            document.getElementById("kpi-admins").textContent = admins;
+            document.getElementById("kpi-customers").textContent = customers;
+        }
+
+        function renderTable() {
+            const filtered = getFiltered();
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
             const body = document.getElementById("users-body");
+            if (!pageItems.length) {
+                body.innerHTML = `<tr><td colspan="6">No users found.</td></tr>`;
+            } else {
+                body.innerHTML = pageItems.map(u => {
+                    const badge = roleBadge(u.role);
+                    const av = avatarColor(u.id);
+                    const initial = (u.full_name || u.email || "?").charAt(0).toUpperCase();
+                    return `
+                    <tr>
+                        <td data-label="User">
+                            <div class="u-user-cell">
+                                <div class="u-user-avatar" style="background:${av.bg}; color:${av.color};">${initial}</div>
+                                <div class="u-user-name">${u.full_name || "(no name set)"}</div>
+                            </div>
+                        </td>
+                        <td data-label="Role"><span class="u-role-badge" style="background:${badge.bg}; color:${badge.color};">${badge.label}</span></td>
+                        <td data-label="Email">${u.email || "-"}</td>
+                        <td data-label="Orders">${orderCounts[u.id] || 0}</td>
+                        <td data-label="Date Joined">${u.created_at ? new Date(u.created_at).toLocaleDateString() : "-"}</td>
+                        <td data-label="Actions"><button class="u-icon-btn" title="Edit role" onclick="editUser('${u.id}')"><i class="fas fa-pen"></i></button></td>
+                    </tr>`;
+                }).join("");
+            }
+
+            document.getElementById("u-showing").textContent =
+                filtered.length ? `Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length} users` : "No users";
+
+            const pag = document.getElementById("u-pagination");
+            let btns = `<button class="u-page-btn" ${currentPage === 1 ? "disabled" : ""} onclick="goPage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`;
+            for (let p = 1; p <= totalPages; p++) {
+                if (p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1) {
+                    btns += `<button class="u-page-btn ${p === currentPage ? "active" : ""}" onclick="goPage(${p})">${p}</button>`;
+                } else if (Math.abs(p - currentPage) === 2) {
+                    btns += `<span style="padding:0 4px;">…</span>`;
+                }
+            }
+            btns += `<button class="u-page-btn" ${currentPage === totalPages ? "disabled" : ""} onclick="goPage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`;
+            pag.innerHTML = btns;
+        }
+
+        function goPage(p) { currentPage = p; renderTable(); }
+
+        function editUser(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (!u) return;
+            editingUserId = id;
+            document.getElementById("u-modal-user-name").textContent = u.full_name || u.email || id;
+            document.getElementById("u-role-select").value = u.role;
+            document.getElementById("u-modal-msg").textContent = "";
+            document.getElementById("u-modal-overlay").classList.add("open");
+        }
+        function closeModal() {
+            document.getElementById("u-modal-overlay").classList.remove("open");
+            editingUserId = null;
+        }
+        document.getElementById("u-modal-close").addEventListener("click", closeModal);
+        document.getElementById("u-modal-cancel").addEventListener("click", closeModal);
+        document.getElementById("u-modal-overlay").addEventListener("click", (e) => {
+            if (e.target.id === "u-modal-overlay") closeModal();
+        });
+        document.getElementById("u-modal-save").addEventListener("click", async () => {
+            if (!editingUserId) return;
+            const msg = document.getElementById("u-modal-msg");
+            const newRole = document.getElementById("u-role-select").value;
+            msg.style.color = "#088178";
+            msg.textContent = "Saving...";
+            const { error } = await supabaseClient.from("profiles").update({ role: newRole }).eq("id", editingUserId);
+            if (error) { msg.style.color = "#e63946"; msg.textContent = error.message; return; }
+            const u = allUsers.find(x => x.id === editingUserId);
+            if (u) u.role = newRole;
+            renderKpis();
+            renderTable();
+            closeModal();
+        });
+
+        function exportCSV() {
+            const rows = getFiltered();
+            const header = ["Name", "Role", "Email", "Orders", "Date Joined"];
+            const lines = rows.map(u => [
+                u.full_name || "", u.role, u.email || "", orderCounts[u.id] || 0,
+                u.created_at ? new Date(u.created_at).toLocaleDateString() : ""
+            ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(","));
+            const csv = [header.join(","), ...lines].join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = "users.csv"; a.click();
+            URL.revokeObjectURL(url);
+        }
+        document.getElementById("u-export").addEventListener("click", exportCSV);
+
+        ["u-search", "u-role-filter"].forEach(id => {
+            document.getElementById(id).addEventListener("input", () => { currentPage = 1; renderTable(); });
+        });
+
+        async function loadUsers() {
             const { data, error } = await supabaseClient.from("profiles").select("*").order("created_at", { ascending: false });
-            if (error) { body.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`; return; }
-            body.innerHTML = data.map(u => `
-                <tr>
-                    <td>${u.full_name || "(no name)"}</td>
-                    <td><span class="badge-role ${u.role === "admin" ? "badge-admin" : "badge-user"}">${u.role}</span></td>
-                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
-                    <td><a href="#" onclick="toggleRole('${u.id}', '${u.role}');return false;">
-                        ${u.role === "admin" ? "Revoke admin" : "Make admin"}
-                    </a></td>
-                </tr>`).join("");
+            if (error) {
+                document.getElementById("users-body").innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+                return;
+            }
+            allUsers = data || [];
+
+            const { data: orders } = await supabaseClient.from("orders").select("user_id");
+            orderCounts = {};
+            (orders || []).forEach(o => {
+                if (!o.user_id) return;
+                orderCounts[o.user_id] = (orderCounts[o.user_id] || 0) + 1;
+            });
+
+            renderKpis();
+            renderTable();
         }
 
         (async () => {
             const auth = await requireAuth(true, "../login.html?redirect=admin/users.html", "../index.html");
             if (!auth) return;
+
+            const adminName = auth.profile?.full_name || auth.user.email;
+            document.getElementById("u-admin-name").textContent = adminName;
+            document.getElementById("u-avatar-letter").textContent = adminName.charAt(0).toUpperCase();
+            document.getElementById("adash-logout").addEventListener("click", (e) => { e.preventDefault(); logoutUser(); });
+
             loadUsers();
         })();
     </script>
