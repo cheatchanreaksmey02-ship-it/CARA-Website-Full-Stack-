@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="../style.css">
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; background: #f6f7f9; font-family: "Spartan", sans-serif; color: #1a1a1a; }
+        body { margin: 0; background: #f6f7f9; color: #1a1a1a; }
         a { text-decoration: none; }
 
-        .msg-wrap { display: flex; min-height: 100vh; }
+        .msg-wrap { display: flex; min-height: 100vh; font-family: inherit; }
 
         /* ---------- Sidebar ---------- */
         .msg-sidebar {
@@ -23,7 +23,7 @@
             flex-shrink: 0;
         }
         .msg-brand { padding: 0 8px 26px; }
-        .msg-brand img { width: 140px; display: block; }
+        .msg-brand img { height: 42px; width: auto; object-fit: contain; display: block; }
         .msg-nav a {
             display: flex; align-items: center; gap: 12px;
             padding: 11px 12px; border-radius: 10px;
@@ -245,7 +245,7 @@
                 <a href="users.html"><i class="fas fa-users"></i> Users</a>
             </div>
             <div class="msg-nav-logout">
-                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                <a href="../html/index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
                 <a href="#" id="msg-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </nav>
@@ -544,7 +544,7 @@
         }
 
         (async () => {
-            const auth = await requireAuth(true, "../login.html?redirect=admin/messages.html", "../index.html");
+            const auth = await requireAuth(true, "../html/login.html?redirect=admin/messages.html", "../html/index.html");
             if (!auth) return;
 
             const adminName = auth.profile?.full_name || auth.user.email;

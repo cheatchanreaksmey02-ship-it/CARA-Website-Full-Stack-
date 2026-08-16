@@ -238,7 +238,7 @@
                 <a href="messages.html"><i class="fas fa-envelope"></i> Messages</a>
             </div>
             <div class="adash-nav-logout">
-                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                <a href="../html/index.html"><i class="fas fa-arrow-left"></i> Back to Site</a>
                 <a href="#" id="adash-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </nav>
@@ -380,7 +380,7 @@
         }
 
         (async () => {
-            const auth = await requireAuth(true, "../login.html?redirect=admin/dashboard.html", "../index.html");
+            const auth = await requireAuth(true, "../html/login.html?redirect=admin/dashboard.html", "../html/index.html");
             if (!auth) return;
 
             const adminName = auth.profile?.full_name || auth.user.email;

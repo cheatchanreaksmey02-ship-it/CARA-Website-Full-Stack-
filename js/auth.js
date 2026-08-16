@@ -20,7 +20,7 @@ async function loginUser(email, password) {
 
 async function logoutUser() {
   await supabaseClient.auth.signOut();
-  window.location.href = "index.html";
+  window.location.href = "/html/index.html";
 }
 
 async function sendPasswordReset(email) {
@@ -59,12 +59,12 @@ async function refreshNavAuthState() {
     if (profile && profile.role === "admin") {
       const adminLi = document.createElement("li");
       adminLi.setAttribute("data-auth-item", "");
-      adminLi.innerHTML = `<a href="admin/dashboard.html">Admin</a>`;
+      adminLi.innerHTML = `<a href="/admin/dashboard.html">Admin</a>`;
       navbar.insertBefore(adminLi, document.getElementById("lg-bag"));
     }
     const accountLi = document.createElement("li");
     accountLi.setAttribute("data-auth-item", "");
-    accountLi.innerHTML = `<a href="account.html">My Account</a>`;
+    accountLi.innerHTML = `<a href="/html/account.html">My Account</a>`;
     navbar.insertBefore(accountLi, document.getElementById("lg-bag"));
 
     const logoutLi = document.createElement("li");
@@ -78,7 +78,7 @@ async function refreshNavAuthState() {
   } else {
     const loginLi = document.createElement("li");
     loginLi.setAttribute("data-auth-item", "");
-    loginLi.innerHTML = `<a href="login.html">Login</a>`;
+    loginLi.innerHTML = `<a href="/html/login.html">Login</a>`;
     navbar.insertBefore(loginLi, document.getElementById("lg-bag"));
   }
 }

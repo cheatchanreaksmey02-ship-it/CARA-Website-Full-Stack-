@@ -138,7 +138,7 @@ body {
 
 /* Home Page */
 #hero{
-  background-image:url("img/hero4.jpg");
+  background-image:url("../img/hero4.jpg");
   height: 90vh;
   width: 100%;
   background-size: cover;
@@ -157,7 +157,7 @@ body {
 }
 
 #hero button{
-  background-image: url("img/hero4.jpg");
+  background-image: url("../img/hero4.jpg");
   background-color: transparent;
   color: #088178;
   border: 0;
@@ -348,7 +348,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-image: url("img/banner/b2.jpg");
+  background-image: url("../img/banner/b2.jpg");
   width: 100%;
   height: 40vh;
   background-size: cover;
@@ -387,7 +387,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background-image: url("img/banner/b17.jpg");
+  background-image: url("../img/banner/b17.jpg");
   width: 47%;
   min-width: 580px;
   height: 45vh;
@@ -398,7 +398,7 @@ body {
 }
 
 #sm-banner .banner-box.banner-box2{
-  background-image: url("img/banner/b10.jpg");
+  background-image: url("../img/banner/b10.jpg");
 }
 
 #sm-banner h4{
@@ -438,7 +438,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background-image: url("img/banner/b7.jpg");
+  background-image: url("../img/banner/b7.jpg");
   width: 30%;
   height: 25vh;
   background-size: cover;
@@ -448,11 +448,11 @@ body {
 }
 
 #banner3 .banner-box.banner-box2{
-  background-image: url("img/banner/b4.jpg");
+  background-image: url("../img/banner/b4.jpg");
 }
 
 #banner3 .banner-box.banner-box3{
-  background-image: url("img/banner/b18.jpg");
+  background-image: url("../img/banner/b18.jpg");
 }
 
 #banner3 h2{
@@ -472,7 +472,7 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  background-image: url("img/banner/b14.jpg");
+  background-image: url("../img/banner/b14.jpg");
   background-repeat: no-repeat;
   background-position: 20% 30%;
   background-color: #041e42;
@@ -576,7 +576,7 @@ footer a:hover{
 /* Shop Page */
 
 #page-header{
-  background-image: url("img/banner/b1.jpg");
+  background-image: url("../img/banner/b1.jpg");
   width: 100%;
   height: 40vh;
   background-size: cover;
@@ -611,7 +611,7 @@ footer a:hover{
 
 /* Blog Page */
 #page-header.blog-header{
-  background-image: url("img/banner/b19.jpg");
+  background-image: url("../img/banner/b19.jpg");
 }
 
 #blog{
