@@ -16,7 +16,7 @@ function productCardHtml(p) {
   return `
     <div class="pro" data-id="${p.id}">
         <a href="product.html?id=${p.id}">
-            <img src="${p.image_url || 'img/product/f1.jpg'}" alt="${p.name}">
+            <img src="../${p.image_url || 'img/product/f1.jpg'}" alt="${p.name}">
             <div class="des">
                 <span>${p.brand || ""}</span>
                 <h5>${p.name}</h5>

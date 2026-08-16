@@ -152,7 +152,7 @@
             document.title = p.name + " - Cara Fashion";
             document.getElementById("pd-name").textContent = p.name;
             document.getElementById("pd-brand").textContent = p.brand || "";
-            document.getElementById("pd-image").src = p.image_url || "img/product/f1.jpg";
+            document.getElementById("pd-image").src = "../" + (p.image_url || "img/product/f1.jpg");
             document.getElementById("pd-image").alt = p.name;
             document.getElementById("pd-stars").innerHTML = starsHtml(p.rating || 5);
             document.getElementById("pd-price").textContent = `$${Number(p.price).toFixed(2)}`;

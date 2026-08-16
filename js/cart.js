@@ -72,7 +72,7 @@ function showAddedDrawer(product, qty) {
   const count = getCart().reduce((sum, i) => sum + i.qty, 0);
   drawer.innerHTML = `
     <div class="added-drawer-inner">
-      <img src="${product.image_url || 'img/product/f1.jpg'}" alt="${product.name}">
+      <img src="../${product.image_url || 'img/product/f1.jpg'}" alt="${product.name}">
       <div class="added-drawer-text">
         <strong>${product.name}</strong>
         <span>${qty} added to your bag</span>
@@ -98,7 +98,7 @@ function renderCartPage() {
 
   body.innerHTML = cart.map(i => `
     <div class="cart-row">
-      <img src="${i.image_url || 'img/product/f1.jpg'}" alt="${i.name}">
+      <img src="../${i.image_url || 'img/product/f1.jpg'}" alt="${i.name}">
       <div class="cart-row-info">
         <h4>${i.name}</h4>
         <p class="cart-row-price">$${i.price.toFixed(2)}</p>
