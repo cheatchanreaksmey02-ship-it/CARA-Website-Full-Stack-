@@ -104,6 +104,7 @@
         .pr-modal input, .pr-modal select, .pr-modal textarea {
             width: 100%; padding: 10px 12px; border: 1px solid #ececec; border-radius: 8px; font-size: 13px;
         }
+        .pr-modal input[type="file"] { padding: 8px; font-size: 12px; }
         .pr-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
 
         @media (max-width: 1100px) { .pr-kpis { grid-template-columns: repeat(3, 1fr); } }
@@ -283,8 +284,13 @@
                 <input type="number" id="p-price" step="0.01" min="0" required>
                 <label>Rating (1–5)</label>
                 <input type="number" id="p-rating" step="0.5" min="1" max="5" value="5">
-                <label>Image path</label>
-                <input type="text" id="p-image" placeholder="img/product/f1.jpg">
+
+                <label>Product Image</label>
+                <input type="file" id="p-image-file" accept="image/*">
+                <input type="hidden" id="p-image">
+                <img id="p-image-preview" src="" alt="" style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #ececec;">
+                <p id="p-image-status" style="font-size:12px; color:#9a9a9e; margin-top:6px;"></p>
+
                 <label>Category</label>
                 <select id="p-category"></select>
                 <label>Stock quantity</label>
@@ -313,6 +319,30 @@
         let allProducts = [];
         let currentPage = 1;
         const PAGE_SIZE = 10;
+
+        // Resolves a stored image_url to something <img src> can use:
+        // - full http(s) URLs (Supabase Storage uploads) are used as-is
+        // - old relative paths like "img/product/f1.jpg" get "../" prepended
+        function resolveImageSrc(imageUrl) {
+            if (!imageUrl) return "../img/product/f1.jpg";
+            if (imageUrl.startsWith("http")) return imageUrl;
+            return "../" + imageUrl;
+        }
+
+        // Uploads a File to the "product-images" Supabase Storage bucket
+        // and returns its public URL.
+        async function uploadProductImage(file) {
+            const ext = file.name.split(".").pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+            const { data, error } = await supabaseClient.storage
+                .from("product-images")
+                .upload(fileName, file);
+            if (error) throw error;
+            const { data: urlData } = supabaseClient.storage
+                .from("product-images")
+                .getPublicUrl(data.path);
+            return urlData.publicUrl;
+        }
 
         function stockStatus(stock) {
             if (stock <= 0) return "out";
@@ -382,7 +412,7 @@
                     <tr>
                         <td data-label="Product">
                             <div class="pr-prod-cell">
-                                <img src="../${p.image_url || 'img/product/f1.jpg'}" alt="">
+                                <img src="${resolveImageSrc(p.image_url)}" alt="">
                                 <div>
                                     <div class="pr-prod-name">${p.name}</div>
                                     ${p.color ? `<div class="pr-prod-sub">${p.color}</div>` : ""}
@@ -442,6 +472,9 @@
             document.getElementById("product-form").reset();
             document.getElementById("product-id").value = "";
             document.getElementById("product-msg").textContent = "";
+            document.getElementById("p-image-status").textContent = "";
+            document.getElementById("p-image-preview").style.display = "none";
+            document.getElementById("p-image-preview").src = "";
         }
 
         document.getElementById("pr-add-btn").addEventListener("click", () => openModal("Add New Product"));
@@ -450,6 +483,19 @@
         document.getElementById("pr-modal-overlay").addEventListener("click", (e) => {
     if (e.target.id === "pr-modal-overlay") closeModal();
 });
+
+        // Show an instant local preview as soon as a file is chosen,
+        // before it's actually uploaded (upload happens on Save).
+        document.getElementById("p-image-file").addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            const preview = document.getElementById("p-image-preview");
+            const status = document.getElementById("p-image-status");
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+                status.textContent = `Selected: ${file.name} (will upload on save)`;
+            }
+        });
 
         function editProduct(id) {
             const p = allProducts.find(x => x.id === id);
@@ -460,6 +506,17 @@
             document.getElementById("p-price").value = p.price;
             document.getElementById("p-rating").value = p.rating || 5;
             document.getElementById("p-image").value = p.image_url || "";
+            document.getElementById("p-image-file").value = "";
+
+            const preview = document.getElementById("p-image-preview");
+            if (p.image_url) {
+                preview.src = resolveImageSrc(p.image_url);
+                preview.style.display = "block";
+            } else {
+                preview.style.display = "none";
+            }
+            document.getElementById("p-image-status").textContent = p.image_url ? "Current image shown above. Choose a file to replace it." : "";
+
             document.getElementById("p-category").value = p.category_id || "";
             document.getElementById("p-stock").value = p.stock;
             document.getElementById("p-color").value = p.color || "";
@@ -479,12 +536,30 @@
             e.preventDefault();
             const msg = document.getElementById("product-msg");
             const id = document.getElementById("product-id").value;
+
+            // If a new file was chosen, upload it first and use the resulting
+            // public URL. Otherwise keep whatever image_url the product already has.
+            const fileInput = document.getElementById("p-image-file");
+            let imageUrl = document.getElementById("p-image").value;
+
+            if (fileInput.files && fileInput.files[0]) {
+                msg.style.color = "#088178";
+                msg.textContent = "Uploading image...";
+                try {
+                    imageUrl = await uploadProductImage(fileInput.files[0]);
+                } catch (err) {
+                    msg.style.color = "#e63946";
+                    msg.textContent = "Image upload failed: " + err.message;
+                    return;
+                }
+            }
+
             const payload = {
                 name: document.getElementById("p-name").value.trim(),
                 brand: document.getElementById("p-brand").value.trim(),
                 price: parseFloat(document.getElementById("p-price").value),
                 rating: parseFloat(document.getElementById("p-rating").value) || 5,
-                image_url: document.getElementById("p-image").value.trim(),
+                image_url: imageUrl,
                 category_id: document.getElementById("p-category").value || null,
                 stock: parseInt(document.getElementById("p-stock").value) || 0,
                 color: document.getElementById("p-color").value.trim() || null,
