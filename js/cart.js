@@ -1,8 +1,4 @@
-// ============================================================
-// Cart — stored in localStorage so it works for guests too.
-// Shows a slide-in confirmation drawer instead of a plain alert.
-// Checkout page writes the order to Supabase (requires login).
-// ============================================================
+
 
 const CART_KEY = "cara_cart";
 const FREE_SHIPPING_THRESHOLD = 50;
