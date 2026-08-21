@@ -1035,12 +1035,12 @@ footer a:hover{
 /* Target the main heading */
 #contact-details .details h2 {
   font-size: 26px;        /* Perfect size for mobile viewports */
-  line-height: 38px;      /* FIXED: Opens up vertical breathing room between text lines */
+  line-height: 38px;      /* Opens up vertical breathing room between text lines */
   padding: 15px 0;        /* Adds clean space above and below the heading */
   color: #222;
 }
 
-/* Target the 'Head Office' h3 heading below it */
+/*Head Office */
 #contact-details .details h3 {
   font-size: 16px;
   font-weight: 700;
@@ -1058,7 +1058,7 @@ footer a:hover{
     height: 100%;
   }
 
-  /* Target the small 'LEAVE A MESSAGE' text inside the form */
+  /* LEAVE A MESSAGE */
 #form-details form span {
   font-size: 14px;
   font-weight: 600;
@@ -1067,10 +1067,10 @@ footer a:hover{
   display: block;       /* Ensures it sits correctly on its own line */
 }
 
-/* Target the 'We love to hear from you' form heading */
+/* We love to hear from you */
 #form-details form h2 {
   font-size: 26px;      /* Perfect responsive size for mobile displays */
-  line-height: 38px;    /* FIXED: Opens up clean vertical space between the lines */
+  line-height: 38px;    /* Opens up clean vertical space between the lines */
   padding: 15px 0 25px 0; /* Adds spacing below the 'span' and above your input boxes */
   color: #222;
 }
@@ -1112,10 +1112,7 @@ footer a:hover{
 
 
 
-/* ============================================================
-   ADDED FOR FULL-STACK FEATURES (cart, account, admin)
-   Reuses the site's existing colors: #088178 (teal), #1a1a1a
-   ============================================================ */
+
 #cart-table, .admin-table {
   width: 100%;
   border-collapse: collapse;
