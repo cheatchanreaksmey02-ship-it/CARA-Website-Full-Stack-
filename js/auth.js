@@ -1,8 +1,4 @@
-// ============================================================
-// Auth helpers — used by login.html, register.html, forgot/reset
-// password pages, and every page that needs to know who's logged in.
-// Requires supabase-config.js to be loaded first.
-// ============================================================
+
 
 async function registerUser(fullName, email, password) {
   const { data, error } = await supabaseClient.auth.signUp({
