@@ -1,8 +1,4 @@
--- ============================================================
--- Migration: add checkout details to orders
--- Run this once in Supabase SQL Editor (safe to run even if some
--- columns already exist, thanks to IF NOT EXISTS)
--- ============================================================
+
 
 alter table public.orders add column if not exists customer_name text;
 alter table public.orders add column if not exists phone text;
