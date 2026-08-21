@@ -1,7 +1,3 @@
-// ============================================================
-// Loads real products from Supabase into the existing
-// .pro-container markup used on index.html and shop.html.
-// ============================================================
 
 function starsHtml(rating) {
   let html = "";
