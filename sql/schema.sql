@@ -1,7 +1,4 @@
--- ============================================================
--- Cara Fashion — Supabase schema
--- Run this in Supabase Dashboard -> SQL Editor -> New query -> Run
--- ============================================================
+
 
 -- 1. PROFILES (extends auth.users with role + name)
 create table if not exists public.profiles (
@@ -146,9 +143,4 @@ select * from (values
 ) as v(name, brand, price, rating, image_url, category_id, stock)
 where not exists (select 1 from public.products);
 
--- ============================================================
--- MAKE YOURSELF ADMIN (run AFTER you register your first account)
--- Replace the email below, then run this line by itself:
--- update public.profiles set role = 'admin' where id =
---   (select id from auth.users where email = 'you@example.com');
--- ============================================================
+
